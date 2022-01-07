@@ -7,10 +7,17 @@ import NavBar from './components/NavBar';
 function App() {
   return (
     <Router>
-        <NavBar />
+      <NavBar />
       <Container>
         <Routes>
-          <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <Home />
+              </PrivateRoute>
+            }
+          />
           <Route path="/login" element={<Login />} />
         </Routes>
       </Container>
@@ -20,10 +27,8 @@ function App() {
 
 export default App;
 
-
-
-//ajke amra  obossoi obossoi mul page er frontend ta ready korbo . 
-//mul page a ki thakbe . ami simple diye suru korbo . 
+//ajke amra  obossoi obossoi mul page er frontend ta ready korbo .
+//mul page a ki thakbe . ami simple diye suru korbo .
 /**
  * what is simplicity ? 
  *1. amar jodi current goal hisabe kichu na thake tahole amake ekta current goal set up korar button dekhabe

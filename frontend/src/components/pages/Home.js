@@ -249,7 +249,7 @@ const Home = () => {
 
       <Row>
         <Col className="py-3 col-5">
-          <h3>Today's Statistics</h3>
+          <h3>Today's Statistics: {parseInt((completed/parseInt(targetHour))*100)}% Completed</h3>
           <Pie data={pieData} />
         </Col>
         <Col>
