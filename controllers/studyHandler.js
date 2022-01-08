@@ -1,30 +1,52 @@
-//eikhane amar model gular upore jehetu operation calayte hobe so ekhane amke model gulake import korte hobe .
-//express-error-handler npm
-//express-async-handler npm
 import asyncHandler from 'express-async-handler';
 import Study from '../models/studyModel.js';
 
-export const createTarget = asyncHandler(async (req, res, next) => {
+//Helper functions
+const monthsStartingAtMiliseconds = (date = new Date()) => {
+  return new Date(date.getFullYear(), date.getMonth(), 1).getTime();
+};
+function getNumberOfDaysInMonth(date = new Date()) {
+  return new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+}
+
+const todaysStartingAtMiliseconds = (date = new Date()) => {
+  return new Date(date.toDateString()).getTime();
+};
+
+export const createTarget = asyncHandler(async (req, res) => {
   const { userId, targetHour } = req.body;
   const data = await Study.create({ userId, targetHour });
   res.status(201).json(data);
 });
 
-export const updateTarget = asyncHandler(async(req, res, next) => {
+export const updateTarget = asyncHandler(async (req, res) => {
   const { userId, targetHour } = req.body;
   const data = await Study.findOneAndUpdate(
-    {  userId },
+    {
+      userId,
+      $and: [
+        { createdAt: { $gte: todaysStartingAtMiliseconds() } },
+        { createdAt: { $lte: todaysStartingAtMiliseconds() + 86400000 } },
+      ],
+    },
     { targetHour: targetHour },
+
     {
       new: true,
     }
   );
   res.json(data);
 });
-export const updateCompleted = asyncHandler(async(req, res, next) => {
+export const updateCompleted = asyncHandler(async (req, res) => {
   const { userId, completed } = req.body;
   const data = await Study.findOneAndUpdate(
-    {  userId },
+   {
+      userId,
+      $and: [
+        { createdAt: { $gte: todaysStartingAtMiliseconds() } },
+        { createdAt: { $lte: todaysStartingAtMiliseconds() + 86400000 } },
+      ],
+    },
     { completed },
     {
       new: true,
@@ -32,13 +54,32 @@ export const updateCompleted = asyncHandler(async(req, res, next) => {
   );
   res.json(data);
 });
-
-export const getTodaysData = asyncHandler(async(req,res,next)=> {
-  const {userId} = req.body;
-  const data = await Study.find({userId,
-    // {
-    //   //something is greater then and less then today's time stamp currnet time take basically check dite hobe eikhane 
-    // }
-  })
+export const getTodaysData = asyncHandler(async (req, res) => {
+  const { userId } = req.body;
+  const data = await Study.findOne({
+    userId,
+    $and: [
+      { createdAt: { $gte: todaysStartingAtMiliseconds() } },
+      { createdAt: { $lte: todaysStartingAtMiliseconds() + 86400000 } },
+    ],
+  });
   res.json(data);
-})
+});
+export const getMonthlyData = asyncHandler(async (req, res) => {
+  let { userId, date } = req.body;
+  if (!date) date = new Date();
+  const data = await Study.find({
+    userId,
+    $and: [
+      { createdAt: { $gte: monthsStartingAtMiliseconds(new Date()) } },
+      {
+        createdAt: {
+          $lte:
+            monthsStartingAtMiliseconds(date) +
+            86400000 * getNumberOfDaysInMonth(date),
+        },
+      },
+    ],
+  });
+  res.json(data);
+});
