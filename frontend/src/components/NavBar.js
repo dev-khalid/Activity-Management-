@@ -1,9 +1,9 @@
 import React from 'react';
 import { Navbar, Container, Nav } from 'react-bootstrap';
-import { NavLink} from 'react-router-dom'; 
-import { useAuth } from '../constexts/AuthContext';
+import { NavLink } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 const NavBar = () => {
-  const { currentUser, logout } = useAuth(); 
+  const { currentUser, logout } = useAuth();
 
   return (
     <Navbar bg="light" expand="lg">

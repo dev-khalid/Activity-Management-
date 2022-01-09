@@ -6,8 +6,8 @@ const router = express.Router();
 router.post('/',createTarget); 
 router.patch('/target',updateTarget); 
 router.patch('/completed',updateCompleted); 
-router.get('/todaysdata',getTodaysData); 
-router.get('/monthlydata',getMonthlyData); 
+router.get('/todaysdata/:userId',getTodaysData); 
+router.get('/monthlydata/:userId',getMonthlyData); 
 
 
 

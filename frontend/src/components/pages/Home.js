@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Col, Container, Row, Modal, Form } from 'react-bootstrap';
 import { Pie } from 'react-chartjs-2';
+import axios from 'axios';
+import { useAuth } from '../../contexts/AuthContext';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   Chart as ChartJS,
   ArcElement,
@@ -8,77 +12,127 @@ import {
   Legend,
   CategoryScale,
   LinearScale,
-  BarElement,
   Title,
 } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
-import getNumberOfDaysInMonth from '../../helpers/getNumberOfDaysInMonth';
-import getMonthName from '../../helpers/getMonthName';
+import MonthlyData from '../MonthlyData';
+import * as Push from 'push.js';
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  Title
+);
 
 const Home = () => {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false); //this state is used for modal show
   const [targetHour, setTargetHour] = useState(0);
   const [hasTarget, setHasTarget] = useState(false);
   const [completed, setCompleted] = useState(0);
   const [currentStudiedHours, setCurrentStudiedHours] = useState(0);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  /**
-   * 
-   * @TODO 
-   * targetHour, completed - componenet did mount er sathe backend theke ene felte hobe and sei onujayi data gula nice dynamically update hobe . dynamic update er system kora ache ekhon sudhu backend a setup kora and eikhane frontend a api diye call korar system ta baki ache . 
-   * 
-   * 
-   * targetHour,completed - componenetUpdate er sathe sathe again backend a send kore frontend a api call kore ante hobe . 
-   * 
-   * 
-   * 
-   * 
-   *   //montly data take obossoi backend theke surtei load kore nite hobe . 
-  //then targetHour, completed ei dutar jekono ekta state change holeu again backend a request pathiye oigulake monthly er hisabe update kore then response ene update kora lagbe . 
-   */
-
+  const [updateBarChart, setUpdateBarchart] = useState(0);
+  const { currentUser } = useAuth();
+  const handleClose = () => setShow(false); //this state is used for modal
+  const handleShow = () => setShow(true); //used for modal
+  useEffect(() => {
+    const todaysData = async () => {
+      const { data } = await axios.get(
+        `http://localhost:5000/api/study/todaysdata/${currentUser.uid}`
+      );
+      if (data) {
+        setHasTarget(true);
+        setTargetHour(data.targetHour);
+        setCompleted(data.completed);
+      } else {
+        Push.create('SetUp your todays target Hour!', {
+          body: 'Setup and keep track of your progress.',
+          icon: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.subpng.com%2Fpng-ve630w%2F&psig=AOvVaw3FoQZxu7uWEqFOFvJRy_lR&ust=1641782695228000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCIjpzqjTo_UCFQAAAAAdAAAAABAD',
+          onClick: function () {
+            window.focus();
+            this.close();
+          },
+        });
+        toast('Hey Set Up Your Todays Target🚀', {
+          position: 'top-center',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        setHasTarget(false);
+      }
+    };
+    todaysData();
+  }, [currentUser]);
   const submitHandler = (e) => {
     e.preventDefault();
-    //TODO: jokhon from ta submit hobe tokhn eikhan theke ekta api request jabe backend end onkgula object soho jemon -> hour , date , userId
-    if (targetHour > 0 && targetHour < 24) setHasTarget(true);
-    else {
+    if (targetHour > 0 && targetHour < 24) {
+      const submitTarget = async () => {
+        const { data } = await axios.post(`http://localhost:5000/api/study`, {
+          userId: currentUser.uid,
+          targetHour,
+        });
+        setHasTarget(true);
+        setTargetHour(data.targetHour);
+        setCompleted(data.completed);
+      };
+      submitTarget();
+    } else {
       setHasTarget(false);
       setTargetHour(0);
     }
-    console.log(targetHour);
   };
-  const updateHandler = (e) => {
+  const updateTargetHandler = (e) => {
     e.preventDefault();
-    if (targetHour > 0 && targetHour < 24) setHasTarget(true);
-    else {
+    if (targetHour > 0 && targetHour < 24) {
+      const updateTarget = async () => {
+        const { data } = await axios.patch(
+          'http://localhost:5000/api/study/target',
+          {
+            userId: currentUser.uid,
+            targetHour,
+          }
+        );
+        setHasTarget(true);
+        setTargetHour(data.targetHour);
+      };
+      updateTarget();
+    } else {
       setHasTarget(false);
       setTargetHour(0);
     }
-    console.log(targetHour);
   };
   const currentStudiedHourHandler = (e) => {
     e.preventDefault();
-
-    setCompleted(
-      (prevComplete) => parseInt(prevComplete) + parseInt(currentStudiedHours)
-    );
-    console.log(targetHour, completed, currentStudiedHours);
-    setCurrentStudiedHours(0);
+    if (
+      parseInt(completed) + parseInt(currentStudiedHours) >
+      parseInt(targetHour)
+    ) {
+      alert(
+        'Your completed hours exceeds target hour. Please update target hours first.'
+      );
+    } else {
+      const updateCompleted = async () => {
+        const { data } = await axios.patch(
+          'http://localhost:5000/api/study/completed',
+          {
+            userId: currentUser.uid,
+            completed: parseInt(completed) + parseInt(currentStudiedHours),
+          }
+        );
+        setCompleted(data.completed);
+        setCurrentStudiedHours(0);
+        setUpdateBarchart(updateBarChart + 1);
+      };
+      updateCompleted();
+    }
   };
 
-  ChartJS.register(
-    ArcElement,
-    Tooltip,
-    Legend,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title
-  );
   const pieData = {
-    labels: ['Completed', 'Not Completed'],
+    labels: ['Completed Hours', 'Not Completed Hours'],
     datasets: [
       {
         label: 'Study Hour Statiscitcs',
@@ -86,38 +140,6 @@ const Home = () => {
         backgroundColor: ['rgba(54, 162, 235, 0.2)', 'rgba(255, 99, 132, 0.2)'],
         borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
         borderWidth: 1,
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Study Hour Statistics of ' + getMonthName(),
-      },
-    },
-  };
-  let labels = [];
-  let monthlyData = [];
-
-  for (let i = 1; i <= getNumberOfDaysInMonth(); i++) {
-    labels.push(i + '');
-    monthlyData.push(0);
-  }
-  monthlyData[new Date().getDate() - 1] = completed;
-
-  const barData = {
-    labels,
-    datasets: [
-      {
-        label: 'Study Hour Count',
-        data: monthlyData,
-        backgroundColor: 'rgba(53, 162, 235, 0.5)',
       },
     ],
   };
@@ -187,7 +209,7 @@ const Home = () => {
                       <i className="fas fa-clipboard-check"></i>
                     </Modal.Title>
                   </Modal.Header>
-                  <Form onSubmit={updateHandler}>
+                  <Form onSubmit={updateTargetHandler}>
                     <Modal.Body>
                       <Form.Group className="mb-3" controlId="formBasicEmail">
                         <Form.Label>
@@ -247,13 +269,31 @@ const Home = () => {
         )}
       </Row>
 
-      <Row>
-        <Col className="py-3 col-5">
-          <h3>Today's Statistics: {parseInt((completed/parseInt(targetHour))*100)}% Completed</h3>
+      <Row className="py-3">
+        <Col className=" col-xl-5 col-md-5 col-sm-12">
+          <h3>
+            Today's Statistics:{' '}
+            {!parseInt((completed / parseInt(targetHour)) * 100)
+              ? '0'
+              : parseInt((completed / parseInt(targetHour)) * 100)}
+            % Completed
+          </h3>
+          
+          <ToastContainer
+            position="top-center"
+            autoClose={10000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
           <Pie data={pieData} />
         </Col>
-        <Col>
-          <Bar options={options} data={barData} />
+        <Col className="col-xl-7 col-md-7 col-sm-12 py-3">
+          <MonthlyData updateBarChart={updateBarChart} />
         </Col>
       </Row>
     </Container>
@@ -264,3 +304,18 @@ export default Home;
 //custom webpack setup
 //custom babel setup
 //custom eslint setup sikhte hobe .
+
+/**
+   * 
+   * @TODO 
+   * targetHour, completed - componenet did mount er sathe backend theke ene felte hobe and sei onujayi data gula nice dynamically update hobe . dynamic update er system kora ache ekhon sudhu backend a setup kora and eikhane frontend a api diye call korar system ta baki ache . 
+   * 
+   * 
+   * targetHour,completed - componenetUpdate er sathe sathe again backend a send kore frontend a api call kore ante hobe . 
+   * 
+   * 
+   * 
+   * 
+   *   //montly data take obossoi backend theke surtei load kore nite hobe . 
+  //then targetHour, completed ei dutar jekono ekta state change holeu again backend a request pathiye oigulake monthly er hisabe update kore then response ene update kora lagbe . 
+   */

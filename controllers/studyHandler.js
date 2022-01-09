@@ -38,7 +38,7 @@ export const updateTarget = asyncHandler(async (req, res) => {
   res.json(data);
 });
 export const updateCompleted = asyncHandler(async (req, res) => {
-  const { userId, completed } = req.body;
+  const { userId, completed } = req.body; 
   const data = await Study.findOneAndUpdate(
    {
       userId,
@@ -51,11 +51,11 @@ export const updateCompleted = asyncHandler(async (req, res) => {
     {
       new: true,
     }
-  );
+  ); 
   res.json(data);
 });
 export const getTodaysData = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
+  const { userId } = req.params; 
   const data = await Study.findOne({
     userId,
     $and: [
@@ -66,7 +66,8 @@ export const getTodaysData = asyncHandler(async (req, res) => {
   res.json(data);
 });
 export const getMonthlyData = asyncHandler(async (req, res) => {
-  let { userId, date } = req.body;
+  let { userId } = req.params;
+  let date;
   if (!date) date = new Date();
   const data = await Study.find({
     userId,

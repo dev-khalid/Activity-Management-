@@ -15,7 +15,6 @@ export function AuthProvider({ children }) {
     const auth = getAuth();
     const unregisterAuthObserver = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
-   
       setLoading(false);
     }); 
     return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
