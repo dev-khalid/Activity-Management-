@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import mongodb from 'mongodb';
 import studyRoute from './routes/studyRoute.js';
 import cors from 'cors';
-
+import cookieParser from 'cookie-parser'
 //DATABASE CONNECTION
 mongoose
   .connect(process.env.MONGO_URI, {
@@ -15,8 +15,10 @@ mongoose
 
 const app = express();
 app.use(cors());
-//mounting studyRoute with application
+app.use(cookieParser()); 
 app.use(express.json());
+
+
 app.get('/', (req, res, next) => {
   console.log('At least getting the request here.')
   res.send('Hello from backend');

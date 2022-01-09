@@ -3,9 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './components/pages/Home';
 import PrivateRoute from './components/PrivateRoute';
 import { Container } from 'react-bootstrap';
-import NavBar from './components/NavBar';
-import axios from 'axios';
-import { useEffect } from 'react';
+import NavBar from './components/NavBar'; 
 function App() {   
   return (
     <Router>
