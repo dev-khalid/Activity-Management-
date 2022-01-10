@@ -38,7 +38,7 @@ const Home = () => {
   useEffect(() => {
     const todaysData = async () => {
       const { data } = await axios.get(
-        `http://localhost:5000/api/study/todaysdata/${currentUser.uid}`
+        `/api/study/todaysdata/${currentUser.uid}`
       );
       if (data) {
         setHasTarget(true);
@@ -71,7 +71,7 @@ const Home = () => {
     e.preventDefault();
     if (targetHour > 0 && targetHour < 24) {
       const submitTarget = async () => {
-        const { data } = await axios.post(`http://localhost:5000/api/study`, {
+        const { data } = await axios.post(`/api/study`, {
           userId: currentUser.uid,
           targetHour,
         });
@@ -89,13 +89,10 @@ const Home = () => {
     e.preventDefault();
     if (targetHour > 0 && targetHour < 24) {
       const updateTarget = async () => {
-        const { data } = await axios.patch(
-          'http://localhost:5000/api/study/target',
-          {
-            userId: currentUser.uid,
-            targetHour,
-          }
-        );
+        const { data } = await axios.patch('/api/study/target', {
+          userId: currentUser.uid,
+          targetHour,
+        });
         setHasTarget(true);
         setTargetHour(data.targetHour);
       };
@@ -116,13 +113,10 @@ const Home = () => {
       );
     } else {
       const updateCompleted = async () => {
-        const { data } = await axios.patch(
-          'http://localhost:5000/api/study/completed',
-          {
-            userId: currentUser.uid,
-            completed: parseInt(completed) + parseInt(currentStudiedHours),
-          }
-        );
+        const { data } = await axios.patch('/api/study/completed', {
+          userId: currentUser.uid,
+          completed: parseInt(completed) + parseInt(currentStudiedHours),
+        });
         setCompleted(data.completed);
         setCurrentStudiedHours(0);
         setUpdateBarchart(updateBarChart + 1);
@@ -278,7 +272,7 @@ const Home = () => {
               : parseInt((completed / parseInt(targetHour)) * 100)}
             % Completed
           </h3>
-          
+
           <ToastContainer
             position="top-center"
             autoClose={10000}

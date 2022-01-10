@@ -4,15 +4,13 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AuthProvider } from './contexts/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { CookiesProvider } from 'react-cookie';
-
+import axios from 'axios'; 
+axios.defaults.baseURL = process.env.REACT_APP_BACKEND;
 ReactDOM.render(
   <React.StrictMode>
-    <CookiesProvider>
       <AuthProvider>
         <App />
       </AuthProvider>
-    </CookiesProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

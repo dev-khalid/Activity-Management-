@@ -23,7 +23,6 @@ ChartJS.register(
   BarElement,
   Title
 );
-
 const MonthlyData = ({updateBarChart}) => {
   const { currentUser } = useAuth();
   let labels = [];
@@ -31,7 +30,7 @@ const MonthlyData = ({updateBarChart}) => {
   useEffect(() => {
     const getMonthlyData = async () => {
       const { data } = await axios.get(
-        `http://localhost:5000/api/study/monthlydata/${currentUser.uid}`
+        `/api/study/monthlydata/${currentUser.uid}`
       );
       let monthlyDataCopy = [];
       data.forEach((d) => {
