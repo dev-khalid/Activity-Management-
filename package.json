@@ -8,10 +8,11 @@
     "express-async-handler": "^1.2.0",
     "mongodb": "^4.3.0",
     "mongoose": "^6.1.5",
+    "nodemon": "^2.0.15",
     "promisify": "^0.0.3",
     "react-firebaseui": "^6.0.0"
   },
-  "scripts": { 
+  "scripts": {
     "frontend": "cd frontend && npm start",
     "api": "nodemon server.js",
     "dev": "concurrently --kill-others-on-fail \"npm run api\" \"npm run frontend\"",
