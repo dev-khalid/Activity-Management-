@@ -5,6 +5,9 @@ import mongodb from 'mongodb';
 import studyRoute from './routes/studyRoute.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+
+const __dirname = path.resolve();
 
 //DATABASE CONNECTION
 mongoose
@@ -20,14 +23,22 @@ app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 
-app.get('/', (req, res, next) => {
+app.get('/api', (req, res, next) => {
   console.log('At least getting the request here.');
   res.send('Hello from backend');
 });
 app.use('/api/study', studyRoute);
+console.log(process.env.NODE_ENV);
+if (process.env.NODE_ENV == 'production') {
+  app.use(express.static(path.join(__dirname, '/frontend/build')));
 
-app.listen(process.env.PORT, () => {
-  console.log(`App running on port ${process.env.PORT}`);
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '/frontend/build', 'index.html'));
+  });
+}
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`App running on port ${PORT}`);
 });
 
 /**

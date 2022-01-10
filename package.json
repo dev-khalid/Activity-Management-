@@ -13,7 +13,8 @@
     "react-firebaseui": "^6.0.0"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "nodemon server.js",
+    "heroku-postbuild": "cd frontend && npm install && npm run build"
   },
   "name": "persons-activity-management-project-template-design",
   "version": "1.0.0",
