@@ -1,24 +1,22 @@
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import 'firebase/compat/auth';
-import firebase from 'firebase/compat/app';
-import { Card, Container } from 'react-bootstrap';
+// import firebase from 'firebase/compat/app';
+import firebase from '../../FirebaseConfiguration';
 
-const config = {
-  apiKey: process.env.REACT_APP_API_KEY,
-  authDomain: process.env.REACT_APP_DOMAIN,
-  projectId: process.env.REACT_APP_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_MESSING_SENDER_ID,
-  appId: process.env.REACT_APP_ID,
-};
-firebase.initializeApp(config);
+import {
+  GoogleAuthProvider,
+  FacebookAuthProvider,
+  EmailAuthProvider,
+} from 'firebase/auth';
+import { Card } from 'react-bootstrap';
+
 const uiConfig = {
   signInFlow: 'popup',
   signInSuccessUrl: '/',
   signInOptions: [
-    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-    firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-    firebase.auth.EmailAuthProvider.PROVIDER_ID,
+    GoogleAuthProvider.PROVIDER_ID,
+    FacebookAuthProvider.PROVIDER_ID,
+    EmailAuthProvider.PROVIDER_ID,
   ],
 };
 
