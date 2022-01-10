@@ -1,4 +1,4 @@
-import '../Firebase';
+import '../FirebaseConfiguration';
 import React, { useEffect, useState, useContext } from 'react';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 // import jwt from 'jsonwebtoken';
