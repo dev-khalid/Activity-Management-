@@ -33,7 +33,7 @@
   "homepage": "https://github.com/dev-khalid/Activity-Management-#readme",
   "description": "",
   "engines": {
-    "node": "14.x",
-    "npm": "6.x"
+    "node": "17.x",
+    "npm": "8.x"
   }
 }
