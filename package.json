@@ -31,5 +31,9 @@
     "url": "https://github.com/dev-khalid/Activity-Management-/issues"
   },
   "homepage": "https://github.com/dev-khalid/Activity-Management-#readme",
-  "description": ""
+  "description": "",
+  "engines": {
+    "node": "14.x",
+    "npm": "6.x"
+  }
 }
