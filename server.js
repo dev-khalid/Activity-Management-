@@ -5,8 +5,6 @@ import mongodb from 'mongodb';
 import studyRoute from './routes/studyRoute.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import path from 'path';
-const __dirname = path.resolve();
 
 //DATABASE CONNECTION
 mongoose
@@ -18,10 +16,6 @@ mongoose
 
 const app = express();
 
-// Serve static files from the React frontend app
-app.use(express.static(path.join(__dirname, '../frontend/build')));
-// AFTER defining routes: Anything that doesn't match what's above, send back index.html; (the beginning slash ('/') in the string is important!)
-
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
@@ -31,10 +25,6 @@ app.get('/', (req, res, next) => {
   res.send('Hello from backend');
 });
 app.use('/api/study', studyRoute);
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname + '/../frontend/build/index.html'));
-});
 
 app.listen(process.env.PORT, () => {
   console.log(`App running on port ${process.env.PORT}`);
