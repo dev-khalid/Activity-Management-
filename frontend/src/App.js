@@ -3,8 +3,17 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './components/pages/Home';
 import PrivateRoute from './components/PrivateRoute';
 import { Container } from 'react-bootstrap';
-import NavBar from './components/NavBar'; 
+import NavBar from './components/NavBar';
+import axios from 'axios';
+import { useEffect } from 'react';
 function App() {
+  useEffect(() => {
+    const test = async () => {
+      const { data } = await axios.get('/');
+      console.log(data);
+    };
+    test();
+  });
   return (
     <Router>
       <NavBar />
