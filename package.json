@@ -11,8 +11,11 @@
     "promisify": "^0.0.3",
     "react-firebaseui": "^6.0.0"
   },
-  "scripts": {
-    "start": "node server.js"
+  "scripts": { 
+    "frontend": "cd frontend && npm start",
+    "api": "nodemon server.js",
+    "dev": "concurrently --kill-others-on-fail \"npm run api\" \"npm run frontend\"",
+    "heroku-postbuild": "cd frontend && npm install && npm run build"
   },
   "name": "persons-activity-management-project-template-design",
   "version": "1.0.0",
