@@ -1,42 +1,20 @@
-
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
+import firebase from 'firebase/compat/app';
 // TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries 
+// https://firebase.google.com/docs/web/setup#available-libraries
 const firebaseConfig = {
-  apiKey: "AIzaSyBDHSgnSnqutyUuMd2m3tn8IYV6H6U6ZBs",
-  authDomain: "persons-activity-management.firebaseapp.com",
-  projectId: "persons-activity-management",
-  storageBucket: "persons-activity-management.appspot.com",
-  messagingSenderId: "266750862632",
-  appId: "1:266750862632:web:dfa28ca3369d4f8db15c1d"
+  apiKey: 'AIzaSyBDHSgnSnqutyUuMd2m3tn8IYV6H6U6ZBs',
+  authDomain: 'persons-activity-management.firebaseapp.com',
+  projectId: 'persons-activity-management',
+  storageBucket: 'persons-activity-management.appspot.com',
+  messagingSenderId: '266750862632',
+  appId: '1:266750862632:web:dfa28ca3369d4f8db15c1d',
 };
- 
-const app = initializeApp(firebaseConfig);
-export default app; 
 
+firebase.initializeApp(firebaseConfig);
+export default firebase;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-////Testing going on 
+////Testing going on
 // // Import the functions you need from the SDKs you need
 // import { initializeApp } from "firebase/app";
 // // TODO: Add SDKs for Firebase products that you want to use
@@ -54,6 +32,6 @@ export default app;
 
 // // Initialize Firebase
 //  const app = initializeApp(firebaseConfig);
-// console.log(process.env.REACT_APP_API_KEY);  
-// export default app; 
-// //how to import the functionality in our application let's learn it from sumit's tutorial 
+// console.log(process.env.REACT_APP_API_KEY);
+// export default app;
+// //how to import the functionality in our application let's learn it from sumit's tutorial

@@ -1,13 +1,11 @@
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import 'firebase/compat/auth';
-// import firebase from 'firebase/compat/app';
 import firebase from '../../FirebaseConfiguration';
-
 import {
   GoogleAuthProvider,
   FacebookAuthProvider,
   EmailAuthProvider,
 } from 'firebase/auth';
+import 'firebase/compat/auth';
 import { Card } from 'react-bootstrap';
 
 const uiConfig = {
