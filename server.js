@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import mongodb from 'mongodb';
 import studyRoute from './routes/studyRoute.js';
 import cors from 'cors';
-import cookieParser from 'cookie-parser'
+import cookieParser from 'cookie-parser';
 //DATABASE CONNECTION
 mongoose
   .connect(process.env.MONGO_URI, {
@@ -15,18 +15,17 @@ mongoose
 
 const app = express();
 app.use(cors());
-app.use(cookieParser()); 
+app.use(cookieParser());
 app.use(express.json());
 
-
 app.get('/', (req, res, next) => {
-  console.log('At least getting the request here.')
+  console.log('At least getting the request here.');
   res.send('Hello from backend');
 });
 app.use('/api/study', studyRoute);
 
-app.listen(5000, () => {
-  console.log(`App running on port 5000`);
+app.listen(process.env.PORT, () => {
+  console.log(`App running on port ${process.env.PORT}`);
 });
 
 /**
@@ -41,7 +40,7 @@ app.listen(5000, () => {
  *
  * Functions on it:
  *    create data,read data , update data .
- *
+ *no problem if I try to deploy the code for next 6 hours cause i will learn more about it . and its a part of code not waste of time .
  *
  *
  */
