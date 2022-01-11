@@ -2,7 +2,6 @@ import React from 'react';
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-console.log(window.innerWidth);
 const NavBar = () => {
   const { currentUser, logout } = useAuth();
 
@@ -18,7 +17,9 @@ const NavBar = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse
             id="basic-navbar-nav"
-            className=" d-flex justify-content-end"
+            className={
+              window.innerWidth > 990 ? 'd-flex justify-content-end' : 'me-auto'
+            }
           >
             <Nav>
               {currentUser ? (
@@ -39,8 +40,8 @@ const NavBar = () => {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      <Container>
-        <Navbar bg="primary" variant="dark">
+      <Container className="py-3">
+        <Navbar bg="light" variant="light">
           <Container>
             <Nav className="me-auto">
               <Nav.Link as={NavLink} to="/study">
