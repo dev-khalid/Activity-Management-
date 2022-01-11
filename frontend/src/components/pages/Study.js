@@ -25,7 +25,7 @@ ChartJS.register(
   Title
 );
 
-const Home = () => {
+const Study = () => {
   const [show, setShow] = useState(false); //this state is used for modal show
   const [targetHour, setTargetHour] = useState(0);
   const [hasTarget, setHasTarget] = useState(false);
@@ -38,7 +38,7 @@ const Home = () => {
   useEffect(() => {
     const todaysData = async () => {
       const { data } = await axios.get(
-        `/api/study/todaysdata/${currentUser.uid}`
+        `api/study/todaysdata/${currentUser.uid}`
       );
       if (data) {
         setHasTarget(true);
@@ -89,7 +89,7 @@ const Home = () => {
     e.preventDefault();
     if (targetHour > 0 && targetHour < 24) {
       const updateTarget = async () => {
-        const { data } = await axios.patch('/api/study/target', {
+        const { data } = await axios.patch('api/study/target', {
           userId: currentUser.uid,
           targetHour,
         });
@@ -113,7 +113,7 @@ const Home = () => {
       );
     } else {
       const updateCompleted = async () => {
-        const { data } = await axios.patch('/api/study/completed', {
+        const { data } = await axios.patch('api/study/completed', {
           userId: currentUser.uid,
           completed: parseInt(completed) + parseInt(currentStudiedHours),
         });
@@ -294,7 +294,7 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Study;
 //custom webpack setup
 //custom babel setup
 //custom eslint setup sikhte hobe .

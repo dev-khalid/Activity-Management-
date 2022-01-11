@@ -1,9 +1,12 @@
+import React from 'react'; 
 import Login from './components/pages/Login';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './components/pages/Home';
+import Study from './components/pages/Study';
 import PrivateRoute from './components/PrivateRoute';
 import { Container } from 'react-bootstrap';
 import NavBar from './components/NavBar';
+import Target from './components/pages/Target';
+import Achievement from './components/pages/Achievement';
 function App() {
   return (
     <Router>
@@ -11,14 +14,30 @@ function App() {
       <Container>
         <Routes>
           <Route
-            path="/"
+            path="/study"
             element={
               <PrivateRoute>
-                <Home />
+                <Study />
               </PrivateRoute>
             }
           />
           <Route path="/login" element={<Login />} />
+          <Route
+            path="/target"
+            element={
+              <PrivateRoute>
+                <Target />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/achievement"
+            element={
+              <PrivateRoute>
+                <Achievement />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </Container>
     </Router>
