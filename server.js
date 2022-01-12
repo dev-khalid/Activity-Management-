@@ -6,6 +6,7 @@ import studyRoute from './routes/studyRoute.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import path from 'path';
+import targetRoute from './routes/targetRoute.js'; 
 
 const __dirname = path.resolve();
 
@@ -28,6 +29,7 @@ app.get('/api', (req, res, next) => {
   res.send('Hello from backend');
 });
 app.use('/api/study', studyRoute);
+app.use('/api/target',targetRoute); 
 console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV == 'production') {
   app.use(express.static(path.join(__dirname, '/frontend/build')));
