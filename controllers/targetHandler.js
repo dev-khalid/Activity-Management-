@@ -34,3 +34,29 @@ export const deleteTarget = asyncHandler(async (req, res, next) => {
   const data = await Target.findByIdAndDelete(_id);
   res.status(204);
 });
+
+export const getTarget = asyncHandler(async (req, res, next) => {
+  //ekhane limit use korte hobe and start at use korte hobe .
+
+  const { page, userId } = req.params.page;
+
+  const query = Target.find({ userId });
+  const numberOfTarget = await Target.find({ userId })
+    .skip(page - 1 * process.env.DOCUMENTS_PER_PAGE)
+    .limit(process.env.DOCUMENTS_PER_PAGE)
+    .countDocuments();
+
+  // //first validate them
+  // //10 documents per page .
+  // if(numberOfTarget)
+  if (numberOfTarget) {
+    const data = await query
+      .skip(page - 1 * process.env.DOCUMENTS_PER_PAGE)
+      .limit(process.env.DOCUMENTS_PER_PAGE);
+    res.status(200).json(data);
+  } else {
+    res.json({
+      message: 'Empty',
+    });
+  }
+});
