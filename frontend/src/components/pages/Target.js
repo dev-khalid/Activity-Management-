@@ -7,41 +7,77 @@ import {
   Container,
   Col,
   Card,
+  Spinner,
 } from 'react-bootstrap';
 import axios from 'axios';
-import data from '../../DevData/targetsArray';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useAuth } from '../../contexts/AuthContext';
+
 const Target = () => {
   const [show, setShow] = useState(false);
   const [title, setTitle] = useState('');
-  const [deadline, setDeadline] = useState(null);
+  const [deadline, setDeadline] = useState('');
+  const [page, setPage] = useState(1);
+  const [onUpdate, setOnUpdate] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { currentUser } = useAuth();
+  const [updatingTarget, setUpdatingTarget] = useState({});
 
-  /**FOLLOWING FUNCTIONALITY WILL BE AVAILABLE AFTER BACKEND IMPLEMENTATION 
-   * ei total jinish take useTargets name ekta hook er moddhe diye dibo . 
-   */
   const [targets, setTargets] = useState([]);
-  useEffect(() => {
-    const getAllTargets = async () => {
-      const { data } = await axios.get('api/target/:pageNumber/:userId'); //we want to apply pagination also right ? so we need to fetch data by page number also .
-      setTargets(data); //backend theke amra directly oi array of objects takei pathabo jeita data er moddhe thakbe so data theke kichui ar ber kore nite hobe na .
-    };
+
+  const getAllTargets = async (page, userId) => {
+    setLoading(true);
+    const { data } = await axios.get(`api/target/${page}/${userId}`);
+    setLoading(false);
     setTargets(data);
-  }, []);
-  /**END OF ABOVE FUNCTIONALITY */
+  };
+
+  useEffect(() => {
+    getAllTargets(page, currentUser.uid);
+  }, [currentUser.uid]);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const submitHandler = (e) => {
     e.preventDefault();
-    //here the api call should be made .
+    if (onUpdate) {
+      const updateData = async () => {
+        const { data } = await axios.patch('api/target', {
+          _id: updatingTarget._id,
+          title,
+          deadline,
+        });
+        setOnUpdate(false);
+        getAllTargets(page, currentUser.uid);
+      };
+      updateData();
+    } else {
+      const createTarget = async () => {
+        const { data } = await axios.post('api/target', {
+          userId: currentUser.uid,
+          title,
+          deadline,
+        });
+        getAllTargets(page, currentUser.uid);
+      };
+      createTarget();
+    }
   };
   const updateHandler = (target) => {
-    setTitle(target.title);
-    setDeadline(target.deadline);
     setShow(true);
+    setTitle(target.title);
+    setDeadline(new Date(`${target.deadline}`).toISOString().split('T')[0]);
+    setOnUpdate(true);
+    setUpdatingTarget(target);
   };
-  const deleteHandler = (trget) => {
+  const deleteHandler = (target) => {
     if (window.confirm('Are you sure  want to delete this')) {
-      console.log('Data Deleted');
+      const deleteData = async () => {
+        await axios.delete(`api/target/${target._id}`);
+        getAllTargets(page, currentUser.uid);
+      };
+      deleteData();
     } else {
       console.log('Denied');
     }
@@ -49,7 +85,15 @@ const Target = () => {
 
   const completeHandler = (target) => {
     if (window.confirm('Have you completed your task? ')) {
-      console.log('Task Completed');
+      const completedTask = async () => {
+        const { data } = await axios.patch('api/target', {
+          _id: target._id,
+          accomplished: true,
+        });
+      };
+      completedTask();
+      toast('Congratulations you Have completed your target 🚀');
+      getAllTargets(page, currentUser.uid);
     } else {
       console.log('Denied');
     }
@@ -86,6 +130,7 @@ const Target = () => {
                 type="date"
                 placeholder="Enter Title"
                 value={deadline}
+                autoComplete="on"
                 onChange={(e) => setDeadline(e.target.value)}
               />
             </Form.Group>
@@ -101,8 +146,21 @@ const Target = () => {
         </Form>
       </Modal>
 
+      <ToastContainer />
       {/* infinite scroll er moddhe ami data take anbo chunk by chunk kivabe ?   */}
-      {targets.length > 0 ? (
+      {loading && (
+        <h3 className="d-flex justify-content-center py-3">
+          <Spinner
+            animation="grow"
+            variant="primary"
+            style={{
+              width: '150px',
+              height: '150px',
+            }}
+          />
+        </h3>
+      )}
+      {!loading && targets.length > 0 ? (
         <Container>
           <Row className="py-3">
             {targets.map((target, id) => (
@@ -114,12 +172,13 @@ const Target = () => {
                       Deadline:{' '}
                       <strong
                         className={
-                          new Date().toDateString() > new Date(target.deadline)
+                          new Date().toDateString() >
+                          new Date(target.deadline).toDateString()
                             ? 'text-danger'
                             : 'text-success'
                         }
                       >
-                        {target.deadline}
+                        {new Date(target.deadline).toDateString()}
                       </strong>
                     </Card.Text>
                     <Button
@@ -151,7 +210,7 @@ const Target = () => {
           </Row>
         </Container>
       ) : (
-        <h3>Loading...</h3>
+        <h3>It might take few seconds to load data if any data is there. </h3>
       )}
     </>
   );

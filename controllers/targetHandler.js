@@ -29,13 +29,13 @@ export const updateTarget = asyncHandler(async (req, res, next) => {
 });
 
 export const deleteTarget = asyncHandler(async (req, res, next) => {
-  await Target.findByIdAndDelete(req.body._id);
+  await Target.findByIdAndDelete(req.params.id);
   res.status(204).end();
 });
 
 export const getTarget = asyncHandler(async (req, res, next) => {
   const { page, userId } = req.params;
-  const data = await Target.find({ userId })
+  const data = await Target.find({ userId, accomplished: false })
     .skip((page - 1) * process.env.DOCUMENTS_PER_PAGE)
     .limit(process.env.DOCUMENTS_PER_PAGE);
   res.status(200).json(data);
