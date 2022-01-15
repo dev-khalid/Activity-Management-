@@ -1,8 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Target from '../models/targetModel.js';
 export const createTarget = asyncHandler(async (req, res, next) => {
-  const { title, userId, deadline, accomplished } = req.body;
-  /**@TODO I have to code database functionality here  */
+  const { title, userId, deadline } = req.body;
   const data = await Target.create({
     title,
     userId,
@@ -30,33 +29,14 @@ export const updateTarget = asyncHandler(async (req, res, next) => {
 });
 
 export const deleteTarget = asyncHandler(async (req, res, next) => {
-  const { _id } = req.body;
-  const data = await Target.findByIdAndDelete(_id);
-  res.status(204);
+  await Target.findByIdAndDelete(req.body._id);
+  res.status(204).end();
 });
 
 export const getTarget = asyncHandler(async (req, res, next) => {
-  //ekhane limit use korte hobe and start at use korte hobe .
-
-  const { page, userId } = req.params.page;
-
-  const query = Target.find({ userId });
-  const numberOfTarget = await Target.find({ userId })
-    .skip(page - 1 * process.env.DOCUMENTS_PER_PAGE)
-    .limit(process.env.DOCUMENTS_PER_PAGE)
-    .countDocuments();
-
-  // //first validate them
-  // //10 documents per page .
-  // if(numberOfTarget)
-  if (numberOfTarget) {
-    const data = await query
-      .skip(page - 1 * process.env.DOCUMENTS_PER_PAGE)
-      .limit(process.env.DOCUMENTS_PER_PAGE);
-    res.status(200).json(data);
-  } else {
-    res.json({
-      message: 'Empty',
-    });
-  }
+  const { page, userId } = req.params;
+  const data = await Target.find({ userId })
+    .skip((page - 1) * process.env.DOCUMENTS_PER_PAGE)
+    .limit(process.env.DOCUMENTS_PER_PAGE);
+  res.status(200).json(data);
 });
