@@ -6,7 +6,7 @@ const PaginationComponent = ({ activePage, setPage, userId, fetchFrom }) => {
   useEffect(() => {
     const allTArgets = async () => {
       const { data } = await axios.get(`api/${fetchFrom}/count/${userId}`);
-      if (data > 10)
+      if (data > process.env.REACT_APP_DOCUMENTS_PER_PAGE)
         setAvailablePages(
           Math.ceil(10 / process.env.REACT_APP_DOCUMENTS_PER_PAGE)
         );

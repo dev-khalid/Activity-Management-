@@ -3,12 +3,13 @@ import Target from '../models/targetModel.js';
 const dateFormatter = (date) => new Date(date).toISOString();
 
 export const allAchievements = asyncHandler(async (req, res, next) => {
-  const { userId, page } = req.params;
-  const data = await Target.find({ userId, accomplished: true })
-    .skip((page - 1) * process.env.DOCUMENTS_PER_PAGE)
-    .limit(process.env.DOCUMENTS_PER_PAGE)
-    .select('-__v');
-  res.status(200).json(data);
+  const { userId } = req.params;
+  const data = await Target.find({
+    userId,
+    accomplished: true,
+  }).countDocuments();
+
+  res.json(data);
 });
 
 export const achievements = asyncHandler(async (req, res) => {
@@ -18,7 +19,7 @@ export const achievements = asyncHandler(async (req, res) => {
   let title = req.query.title || '';
   const data = await Target.find({
     userId,
-    $and: [{ createdAt: { $gte: from } }, { createdAt: { $lte: to } }],
+    $and: [{ updatedAt: { $gte: from } }, { updatedAt: { $lte: to } }],
     title: { $regex: title, $options: 'i' },
     accomplished: true,
   })

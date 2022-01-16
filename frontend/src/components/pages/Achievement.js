@@ -11,35 +11,32 @@ import {
 } from 'react-bootstrap';
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
+import PaginationComponent from '../PaginationComponent';
 
 const Achievement = () => {
   const [from, setFrom] = useState('');
   const [to, setTo] = useState(new Date().toISOString().split('T')[0]);
   const [searchTitle, setSearchTitle] = useState('');
   const [achievements, setAchievements] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { currentUser } = useAuth();
   const [page, setPage] = useState(1);
   const getAchievements = async (userId) => {
-    //ekhane amader jinish gula sob build up kore kore bar bar backend a request korte hobe.
+    setLoading(true);
     const api =
       from !== ''
-        ? `api/achievement/${page}/${userId}?from=${from}&to=${to}&title=${searchTitle}`
-        : `api/achievement/${page}/${userId}`;
-    console.log('frontend', api);
+        ? `api/achievement/data/${page}/${userId}?from=${from}&to=${to}&title=${searchTitle}`
+        : `api/achievement/data/${page}/${userId}?title=${searchTitle}`;
     const { data } = await axios.get(api);
-    console.log(data);
     setAchievements(data);
     setLoading(false);
   };
   useEffect(() => {
     getAchievements(currentUser.uid);
-    console.log(achievements);
   }, [currentUser.uid, page]);
   const submitHandler = (e) => {
     e.preventDefault();
-
-    //here goes the backend api call
+    getAchievements(currentUser.uid);
   };
 
   return (
@@ -58,7 +55,6 @@ const Achievement = () => {
                     type="date"
                     value={from}
                     onChange={(e) => {
-                      console.log(e.target.value);
                       setFrom(e.target.value);
                     }}
                     autoComplete="on"
@@ -74,7 +70,6 @@ const Achievement = () => {
                     type="date"
                     value={to}
                     onChange={(e) => {
-                      console.log(e.target.value);
                       setTo(e.target.value);
                     }}
                     autoComplete="on"
@@ -142,7 +137,13 @@ const Achievement = () => {
                 </>
               ) : (
                 <>
-                  {loading && <h5>Loading...</h5>}
+                  {loading && (
+                    <tr>
+                      <td colSpan={4}>
+                        <strong>Loading...</strong>
+                      </td>
+                    </tr>
+                  )}
                   {!loading && achievements.length === 0 && (
                     <tr>
                       <td colSpan={4}>No Data Found</td>
@@ -153,6 +154,12 @@ const Achievement = () => {
             </tbody>
           </Table>
         </div>
+        <PaginationComponent
+          activePage={page}
+          fetchFrom={'achievement'}
+          setPage={setPage}
+          userId={currentUser.uid}
+        />
       </Container>
     </div>
   );
