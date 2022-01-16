@@ -24,11 +24,14 @@ const NavBar = () => {
             <Nav>
               {currentUser ? (
                 <>
-                  <Nav.Link>
+                  <Nav.Link className="text-primary">
                     <i className="fas fa-user"></i> {currentUser.displayName}
                   </Nav.Link>{' '}
-                  <Nav.Link onClick={async () => await logout()}>
-                    Logout <i className="fas fa-sign-out-alt"></i>
+                  <Nav.Link
+                    className="text-primary"
+                    onClick={async () => await logout()}
+                  >
+                    LOGOUT <i className="fas fa-sign-out-alt"></i>
                   </Nav.Link>
                 </>
               ) : (

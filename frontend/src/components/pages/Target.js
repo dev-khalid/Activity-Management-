@@ -68,6 +68,8 @@ const Target = () => {
       };
       createTarget();
     }
+    setTitle('');
+    setDeadline('');
   };
   const updateHandler = (target) => {
     setShow(true);

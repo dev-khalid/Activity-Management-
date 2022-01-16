@@ -25,8 +25,18 @@ export const updateTarget = asyncHandler(async (req, res) => {
     {
       userId,
       $and: [
-        { createdAt: { $gte: todaysStartingAtMiliseconds() } },
-        { createdAt: { $lte: todaysStartingAtMiliseconds() + 86400000 } },
+        {
+          createdAt: {
+            $gte: new Date(todaysStartingAtMiliseconds()).toISOString(),
+          },
+        },
+        {
+          createdAt: {
+            $lte: new Date(
+              todaysStartingAtMiliseconds() + 86400000
+            ).toISOString(),
+          },
+        },
       ],
     },
     { targetHour: targetHour },
@@ -38,9 +48,9 @@ export const updateTarget = asyncHandler(async (req, res) => {
   res.json(data);
 });
 export const updateCompleted = asyncHandler(async (req, res) => {
-  const { userId, completed } = req.body; 
+  const { userId, completed } = req.body;
   const data = await Study.findOneAndUpdate(
-   {
+    {
       userId,
       $and: [
         { createdAt: { $gte: todaysStartingAtMiliseconds() } },
@@ -51,11 +61,11 @@ export const updateCompleted = asyncHandler(async (req, res) => {
     {
       new: true,
     }
-  ); 
+  );
   res.json(data);
 });
 export const getTodaysData = asyncHandler(async (req, res) => {
-  const { userId } = req.params; 
+  const { userId } = req.params;
   const data = await Study.findOne({
     userId,
     $and: [
