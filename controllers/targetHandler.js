@@ -40,3 +40,11 @@ export const getTarget = asyncHandler(async (req, res, next) => {
     .limit(process.env.DOCUMENTS_PER_PAGE);
   res.status(200).json(data);
 });
+
+export const getAllTargets = asyncHandler(async (req, res) => {
+  const { userId } = req.params; 
+  const data = await Target.find({
+    userId,
+  }).countDocuments(); 
+  res.json(data);
+});

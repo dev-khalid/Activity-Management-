@@ -13,6 +13,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../../contexts/AuthContext';
+import PaginationComponent from '../PaginationComponent';
 
 const Target = () => {
   const [show, setShow] = useState(false);
@@ -25,7 +26,11 @@ const Target = () => {
   const [updatingTarget, setUpdatingTarget] = useState({});
 
   const [targets, setTargets] = useState([]);
-
+  // const numberOfTargets = useMemo(() => {
+  //   const calc = async () => {
+  //     const { data } = await axios.get(`api/target/${userId}`);
+  //   };
+  // }, []);
   const getAllTargets = async (page, userId) => {
     setLoading(true);
     const { data } = await axios.get(`api/target/${page}/${userId}`);
@@ -35,7 +40,7 @@ const Target = () => {
 
   useEffect(() => {
     getAllTargets(page, currentUser.uid);
-  }, [currentUser.uid]);
+  }, [page, currentUser.uid]);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -43,7 +48,7 @@ const Target = () => {
     e.preventDefault();
     if (onUpdate) {
       const updateData = async () => {
-        const { data } = await axios.patch('api/target', {
+        await axios.patch('api/target', {
           _id: updatingTarget._id,
           title,
           deadline,
@@ -54,7 +59,7 @@ const Target = () => {
       updateData();
     } else {
       const createTarget = async () => {
-        const { data } = await axios.post('api/target', {
+        await axios.post('api/target', {
           userId: currentUser.uid,
           title,
           deadline,
@@ -86,7 +91,7 @@ const Target = () => {
   const completeHandler = (target) => {
     if (window.confirm('Have you completed your task? ')) {
       const completedTask = async () => {
-        const { data } = await axios.patch('api/target', {
+        await axios.patch('api/target', {
           _id: target._id,
           accomplished: true,
         });
@@ -212,6 +217,12 @@ const Target = () => {
       ) : (
         <h3>It might take few seconds to load data if any data is there. </h3>
       )}
+      <PaginationComponent
+        activePage={page}
+        fetchFrom={'target'}
+        setPage={setPage}
+        userId={currentUser.uid}
+      />
     </>
   );
 };
