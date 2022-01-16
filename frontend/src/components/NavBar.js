@@ -56,6 +56,9 @@ const NavBar = () => {
               <Nav.Link as={NavLink} to="/achievement">
                 Achievement
               </Nav.Link>
+              <Nav.Link as={NavLink} to="/students">
+                Students
+              </Nav.Link>
             </Nav>
           </Container>
         </Navbar>

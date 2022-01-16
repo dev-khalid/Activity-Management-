@@ -1,4 +1,4 @@
-import React from 'react'; 
+import React from 'react';
 import Login from './components/pages/Login';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Study from './components/pages/Study';
@@ -7,6 +7,8 @@ import { Container } from 'react-bootstrap';
 import NavBar from './components/NavBar';
 import Target from './components/pages/Target';
 import Achievement from './components/pages/Achievement';
+import Students from './components/pages/Students';
+import Details from './components/pages/Details';
 function App() {
   return (
     <Router>
@@ -38,6 +40,8 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route path="/students" element={<Students />} />
+          <Route path="/details" element={<Details />} />
         </Routes>
       </Container>
     </Router>
