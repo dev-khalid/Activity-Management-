@@ -1,13 +1,50 @@
 import React, { useState } from 'react';
-import { Row, Col, Container, Table, Button, Form } from 'react-bootstrap';
+import { Table, Button, Form, Modal } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 const quality = ['Best', 'Good', 'Medium', 'Bad', 'Very Bad'];
 //backend theke data asbei sorted hoye so problem nai .
 const Students = () => {
   const [name, setName] = useState('');
-  const addStudentHandler = (e) => {};
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const addStudentHandler = (e) => {
+    e.prevenetDefault(); 
+  };
   return (
     <>
+      <Button className="mb-3" variant="primary" onClick={handleShow}>
+        Add Student
+      </Button>
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add Student</Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={addStudentHandler}>
+          <Modal.Body>
+            <Form.Group className="mb-3" controlId="name">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                type="text"
+                placeholder="Enter name"
+              />
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button variant="primary" type="submit" onClick={handleClose}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+
       <Table
         style={{
           textAlign: 'center',
@@ -121,21 +158,6 @@ const Students = () => {
           </tr>
         </tbody>
       </Table>
-      <Form onSubmit={addStudentHandler}>
-        <Form.Group className="mb-3" controlId="name">
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            type="text"
-            placeholder="Enter name"
-          />
-        </Form.Group>
-
-        <Button variant="primary" type="submit">
-          Add Student
-        </Button>
-      </Form>
     </>
   );
 };

@@ -1,2 +1,1 @@
-Frontend: 
-Students.js  Add Students should be inside a modal. and should only visible to admin 
+ekhon ghotona hocche details page a ki ki thakbe ? 
