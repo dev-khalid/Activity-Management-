@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 import path from 'path';
 import targetRoute from './routes/targetRoute.js';
 import achievementRoute from './routes/achievementRoute.js';
+import studentRoute from './routes/studentRoute.js';
 
 const __dirname = path.resolve();
 
@@ -33,7 +34,7 @@ app.get('/api', (req, res, next) => {
 app.use('/api/study', studyRoute);
 app.use('/api/target', targetRoute);
 app.use('/api/achievement', achievementRoute);
-
+app.use('/api/student', studentRoute);
 if (process.env.NODE_ENV == 'production') {
   app.use(express.static(path.join(__dirname, '/frontend/build')));
 

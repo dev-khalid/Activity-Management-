@@ -1,3 +1,9 @@
 Issue arises : 
 1.how to rank or sort student table based on studentsActivity tables data . in a particular month. 
 2.
+
+
+
+Backend : 
+Database: 
+mongoose aggregation and pre post hook , joining data table . 

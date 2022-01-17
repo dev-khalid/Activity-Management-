@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const StudentActivitySchema = mongoose.Schema(
   {
-    name: {
+    studentId: {
       type: mongoose.Types.ObjectId,
       ref: 'Student',
       required: ['UserName Object is requierd.'],
@@ -12,6 +12,11 @@ const StudentActivitySchema = mongoose.Schema(
       required: true,
       default: false,
     },
+    homeworkGiven: { 
+      type: Boolean,
+      default: true, 
+      required: true, 
+    }, 
     homework: {
       //ei field ta ami frontend a show korbo na jodi amar homeworkGiven zero hoy .
       type: Number,
@@ -23,14 +28,28 @@ const StudentActivitySchema = mongoose.Schema(
       default: 0,
       required: true,
     },
+    vivaAsked: { 
+      type: Number, 
+      default: 0, 
+    },
     vivaAnswered: {
       //ei field ta ami frontend a show korbo na jodi amar viva asked zero hoy .
       type: Number,
       default: 0,
     },
+    testFullMark: { 
+      type: Number,
+      default: 0, 
+    }, 
+    testSubject: { 
+      type: String, 
+      enum: ['None', 'Physics', 'Math','Ict'], 
+      default: 'None', 
+    },
+    
     testSubject: {
       type: String,
-      enum: ['None', 'Physics', 'Math', 'Ict'],
+      enum: ['None', 'Physics', 'Math', 'Ict'], 
       default: 'None',
     },
     testScore: {

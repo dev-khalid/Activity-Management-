@@ -8,10 +8,16 @@ const StudentSchema = mongoose.Schema(
     },
     rank: {
       type: Number,
+      default: 0,
     },
     quality: {
       type: String,
       enum: ['Best', 'Good', 'Medium', 'Bad', 'Very Bad'],
+      default: 'Medium',
+    },
+    average: {
+      type: Number,
+      default: 0,
     },
   },
   {
