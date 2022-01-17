@@ -1,1 +1,3 @@
-ekhon ghotona hocche details page a ki ki thakbe ? 
+Issue arises : 
+1.how to rank or sort student table based on studentsActivity tables data . in a particular month. 
+2.

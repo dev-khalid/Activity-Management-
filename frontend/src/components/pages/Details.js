@@ -1,28 +1,100 @@
-import React from 'react';
-import { Table, Badge, Button } from 'react-bootstrap';
-const Details = () => {
+import React, { useState, useeffect } from 'react';
+import { Table, Badge, Button, Form, Modal } from 'react-bootstrap';
+import Summary from '../Summary';
+
+/** @TODO 1.FIRST A DATABASE THEKE JINISH GULA ANTE HOBE . 2.jodi viva aksed questions thake tahole ekhane modal er moddhe viva answered appeared hobe . 3.jodi test full mark thake tahole amar ekhane test score appear hobe .  */
+
+const Details = ({ name = 'bayzit' }) => {
+  const [show, setShow] = useState(false);
+  const [attandance, setAttandance] = useState(true);
+  const [homework, setHomeWork] = useState('None');
+  const [late, setLate] = useState(0);
+  const [testScore, setTestScore] = useState(0);
+  const [vivaAnswered, setVivaAnswered] = useState(0);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const submitHandler = (e) => {
+    e.prevenetDefault();
+    console.log('api call should be made');
+  };
   return (
     <>
-      <h5>Khalids Statistics for January - 2022</h5>
-      <span>Payment Status: </span>
-      <strong className="text-info">Paid</strong> <br />
-      <span>Student Status: </span>
-      <Badge variant="primary">Best</Badge> <br />
-      <span>Average Late time:</span>{' '}
-      <strong className="text-danger">5 mins</strong> <br />
-      <span>Attandance Ratio: </span>
-      <strong className="text-info">100%</strong>
-      <br />
-      <span>Home Work Done : </span>
-      <strong className="text-info"> 82% </strong>
-      <br />
-      <span>Viva Performance: </span>
-      <strong className="text-info">75%</strong> <br />
-      <span>Test Score: </span>
-      <strong className="text-primary">95%</strong> <br />
-      <span>Test Taken: </span>
-      <strong className="text-primary"> 10/10</strong> <br />
+      <Summary />
       <Button className="mt-3">Download Statistics</Button>
+      {/**@TODO this section is only for admin */}
+      <Button className="mt-3 mx-3 " onClick={handleShow}>
+        Add Todays Data
+      </Button>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add Activity of {name}</Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={submitHandler}>
+          <Modal.Body>
+            <Form.Group className="mb-3" controlId="attandance">
+              <Form.Label>Attandance</Form.Label>
+              <Form.Select
+                onChange={(e) => {
+                  setAttandance(e.target.value);
+                }}
+              >
+                <option value={true}>{`✔`}</option>
+                <option value={false}>{`❌`}</option>
+              </Form.Select>
+            </Form.Group>
+            {/**@TODO homwwork conditionally render korte hobe. */}
+            <Form.Group className="mb-3" controlId="homework">
+              <Form.Label>Home Work</Form.Label>
+              <Form.Control
+                value={homework}
+                onChange={(e) => {
+                  setHomeWork(e.target.value);
+                }}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="late">
+              <Form.Label>Late</Form.Label>
+              <Form.Control
+                value={late}
+                onChange={(e) => {
+                  setLate(e.target.value);
+                }}
+              ></Form.Control>
+            </Form.Group>
+            {/**@TODO test subject will be automatically added  if any . and it will be rendered conditonally*/}
+            <Form.Group className="mb-3" controlId="test score">
+              <Form.Label>Test Score</Form.Label>
+              <Form.Control
+                value={testScore}
+                onChange={(e) => {
+                  setTestScore(e.target.value);
+                }}
+              ></Form.Control>
+            </Form.Group>
+
+            {/**@TODO test subject will be automatically added  if any . and it will be rendered conditonally*/}
+            <Form.Group className="mb-3" controlId="vivaanswered">
+              <Form.Label>Viva Answered</Form.Label>
+              <Form.Control
+                value={vivaAnswered}
+                onChange={(e) => {
+                  setVivaAnswered(e.target.value);
+                }}
+              ></Form.Control>
+            </Form.Group>
+          </Modal.Body>
+
+          <Modal.Footer>
+            <Button variant="danger" onClick={handleClose}>
+              Close
+            </Button>
+            <Button type="submit" variant="primary" onClick={handleClose}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
       <Table className="mt-3" striped bordered hover variant="dark">
         <thead>
           <tr>
