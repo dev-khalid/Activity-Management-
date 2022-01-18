@@ -45,13 +45,7 @@ const StudentActivitySchema = mongoose.Schema(
       type: String, 
       enum: ['None', 'Physics', 'Math','Ict'], 
       default: 'None', 
-    },
-    
-    testSubject: {
-      type: String,
-      enum: ['None', 'Physics', 'Math', 'Ict'], 
-      default: 'None',
-    },
+    }, 
     testScore: {
       //ei field ta ami frontend a show korbo na jodi amar test full mark 0 hoy .
       type: Number,
