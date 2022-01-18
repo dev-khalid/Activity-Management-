@@ -6,6 +6,7 @@ import {
   getAllStudents,
   addStudentActivity,
   basicConfig,
+  getStudentActivity,
   // test,
 } from '../controllers/studentActivityHandler.js';
 
@@ -17,5 +18,10 @@ router.delete('/:studentId', deleteStudent);
 router.get('/:month', getAllStudents);
 //student er basic activity manage korbo
 router.post('/basicconfig', basicConfig);
-router.post('/studentactivity', addStudentActivity);
+router.post('/studentactivity', addStudentActivity); 
+router.get('/studentactivity/:studentId/:month',getStudentActivity); 
 export default router;
+
+
+
+//payment er jonne separate route thakbe somossa nai . 

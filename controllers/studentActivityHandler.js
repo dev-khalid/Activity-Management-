@@ -19,32 +19,33 @@ const Month = [
 
 const averageCalculator = (prev, current) => {
   if (prev) {
-    returen(prev + current) / 2;
+    return (prev + current) / 2;
   } else {
     return current;
   }
 };
 
-const statusCalculator = (num) => {
+const statusCalculator = (inp) => {
+  let num = inp * 100;
   let status = '';
-  if (num >= process.env.Status_Best) {
+  if (num >= 1 * process.env.Status_Best) {
     status = 'Best';
-  } else if (num >= process.env.Status_Good) {
+  } else if (num >= 1 * process.env.Status_Good) {
     status = 'Good';
-  } else if (num >= process.env.Status_Medium) {
+  } else if (num >= 1 * process.env.Status_Medium) {
     status = 'Medium';
-  } else if (num >= process.env.Status_Bad) {
+  } else if (num >= 1 * process.env.Status_Bad) {
     status = 'Bad';
-  } else if (num >= process.env.Status_Very_Bad) {
+  } else if (num >= 1 * process.env.Status_Very_Bad) {
     status = 'Very Bad';
   }
   return status;
 };
 //percentage calculator
 
-const percentageCalculator = (percentage, full, achieved) =>
-  (10 * achieved) / full;
-
+const percentageCalculator = (percentage, full, achieved) => {
+  return (percentage * achieved) / full;
+};
 function getNumberOfDaysInMonth(date = new Date()) {
   return new Date(date.getFullYear(), date.getMonth(), 0).getDate();
 }
@@ -60,7 +61,6 @@ export const createStudent = asyncHandler(async (req, res) => {
 
 export const getAllStudents = asyncHandler(async (req, res) => {
   const month = new Date(req.params.month).toISOString(); //frontend theke JANUARY/2022 asbe
-  console.log(month);
   const data = await Student.find({
     'monthly.month': month,
   });
@@ -124,56 +124,62 @@ export const addStudentActivity = asyncHandler(async (req, res) => {
     'monthly.month': month,
   });
   let calcTotalPercentage =
-      process.env.Attandance +
-      process.env.HomeworkPercentage +
-      process.env.Viva,
+      1 * process.env.Attandance +
+      1 * process.env.HomeworkPercentage +
+      1 * process.env.Viva,
     calcPercentage = 0,
     calcExamTotalPercentage = 0,
-    calcExamPercentage;
+    calcExamPercentage = 0;
   if (attandance) {
-    //jodi attand hoy taholei kebol late time count kora jay
-    calcPercentage += process.env.Attandance;
+    calcPercentage += 1 * process.env.Attandance;
+    let x = 0;
+
     if (late > 0) {
       const newLate = late > 15 ? 15 : late;
-      calcPercentage -= percentageCalculator(
-        process.env.Late,
-        process.env.MaxLateCount,
+      x = percentageCalculator(
+        1 * process.env.Late,
+        1 * process.env.MaxLateCount,
         newLate
       );
     }
+    calcPercentage -= x;
   }
 
   if (homeworkGiven) {
-    calcPercentage += homework;
+    calcPercentage += percentageCalculator(
+      1 * process.env.HomeworkPercentage,
+      100,
+      homework
+    );
   } else {
-    calcPercentage += process.env.HomeworkPercentage; //free mark
+    calcPercentage += 1 * process.env.HomeworkPercentage; //free mark
   }
 
   if (vivaAsked > 0) {
     calcPercentage += percentageCalculator(
-      process.env.Viva,
+      1 * process.env.Viva,
       vivaAsked,
       vivaAnswered
     );
   } else {
-    calcPercentage += process.env.Viva; //free mark
+    calcPercentage += 1 * process.env.Viva; //free mark
   }
   let examPercentage = 0;
   if (testFullMark > 0) {
-    calcExamTotalPercentage += process.env.Exam;
+    calcExamTotalPercentage += 1 * process.env.Exam;
     calcExamPercentage += percentageCalculator(
       calcExamTotalPercentage,
       testFullMark,
       testScore
     );
     examPercentage = averageCalculator(
-      studentData.examPercentage,
+      studentData.monthly[0].examPercentage,
       calcExamPercentage
     );
   }
 
   const regularPercentage = averageCalculator(
-    studentData.regularPercentage,
+    studentData.monthly[0].regularPercentage,
     calcPercentage
   );
 
@@ -185,7 +191,7 @@ export const addStudentActivity = asyncHandler(async (req, res) => {
     );
   } else {
     status = statusCalculator(regularPercentage / calcTotalPercentage);
-  } 
+  }
   const updatedFile = await Student.findOneAndUpdate(
     {
       _id: studentId,
@@ -195,13 +201,23 @@ export const addStudentActivity = asyncHandler(async (req, res) => {
       $set: {
         'monthly.$.month': month,
         'monthly.$.regularPercentage': regularPercentage,
-        'monthly.$.status': status,
+        'monthly.$.quality': status,
         'monthly.$.examPercentage': examPercentage,
       },
+    },
+    {
+      new: true,
     }
   );
 
   res.json(updatedFile);
+});
+
+//age kichu frontend a implement kore ese then ei kaj ta complete korbo .
+export const getStudentActivity = asyncHandler(async (req, res) => {
+  const { studentId, month } = req.params;
+  const data = await StudentActivity.find();
+  res.json('i will code it later');
 });
 
 // export const test = asyncHandler(async (req, res) => {
