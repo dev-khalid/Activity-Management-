@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Form, Modal, Spinner } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import BasicConfiguration from '../BasicConfiguration';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
@@ -41,7 +41,7 @@ const Students = () => {
   const getAllStudent = async () => {
     setLoading(true);
     const { data } = await axios.get(`api/student/${month}`);
-    function compare(a, b) { 
+    function compare(a, b) {
       if (
         a.monthly[0].regularPercentage + a.monthly[0].examPercentage <
         b.monthly[0].regularPercentage + b.monthly[0].examPercentage
@@ -77,7 +77,7 @@ const Students = () => {
     }
   };
   const addStudentHandler = (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     const createStudent = async () => {
       const { data } = await axios.post('api/student', {
         name,
@@ -190,7 +190,15 @@ const Students = () => {
                   <td>{id + 1}</td>
                   <td>{student.name}</td>
                   <td>
-                    <Button as={NavLink} to={`/details/${student._id}`}>
+                    <Button
+                      as={Link}
+                      to={`/details`}
+                      state={{
+                        studentId: student._id,
+                        month,
+                        name: student.name,
+                      }}
+                    >
                       Details
                     </Button>
                   </td>

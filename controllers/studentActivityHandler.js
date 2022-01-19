@@ -41,7 +41,6 @@ const statusCalculator = (inp) => {
   }
   return status;
 };
-//percentage calculator
 
 const percentageCalculator = (percentage, full, achieved) => {
   return (percentage * achieved) / full;
@@ -69,6 +68,18 @@ export const getAllStudents = asyncHandler(async (req, res) => {
     'monthly.month': month,
   });
   res.json(data);
+});
+export const getOneStudentData = asyncHandler(async (req, res) => {
+  const studentId = req.params.studentId;
+  const date = req.params.month;
+  const month = new Date(
+    `${Month[new Date(date).getMonth()]}-${new Date(date).getFullYear()}`
+  ).toISOString();
+  const studentData = await Student.findOne({
+    _id: studentId,
+    'monthly.month': month,
+  });
+  res.json(studentData);
 });
 export const updateStudent = asyncHandler(async (req, res) => {
   const data = await Student.findByIdAndUpdate(
@@ -105,10 +116,12 @@ export const addStudentActivity = asyncHandler(async (req, res) => {
   const month = new Date(
     `${Month[new Date(date).getMonth()]}-${new Date(date).getFullYear()}`
   ).toISOString();
+
   const { homeworkGiven, vivaAsked, testFullMark, testSubject } =
     await BasicConfig.findOne({ date }).select(
       'homeworkGiven vivaAsked testFullMark testSubject'
     );
+  console.log(homeworkGiven, vivaAsked, testFullMark, testSubject);
   const { studentId, attandance, homework, late, vivaAnswered, testScore } =
     req.body;
   const data = await StudentActivity.create({
@@ -233,6 +246,7 @@ export const qualityFinder = asyncHandler(async (req, res) => {
 //student er current month er data check kora lagbe. seitake niye client side a amra hisab korleu problem nai .
 
 export const getStudentActivity = asyncHandler(async (req, res) => {
+  const { studentId, month } = req.params;
   const activityData = await StudentActivity.find({
     studentId,
     //pura ek masher full data sob e lagbe
@@ -278,3 +292,9 @@ export const getStudentActivity = asyncHandler(async (req, res) => {
 // });
 
 //viva ask kora niye percentage er ekta isssue ache eita ami pore solve korbo insallah
+
+export const getBasicConfig = asyncHandler(async (req, res) => {
+  const date = new Date(req.params.date).toISOString();
+  const data = await BasicConfig.findOne({ date });
+  res.json(data);
+});
