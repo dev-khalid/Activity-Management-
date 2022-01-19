@@ -41,7 +41,7 @@ function App() {
             }
           />
           <Route path="/students" element={<Students />} />
-          <Route path="/details" element={<Details />} />
+          <Route path="/details/:studentId" element={<Details />} />
         </Routes>
       </Container>
     </Router>

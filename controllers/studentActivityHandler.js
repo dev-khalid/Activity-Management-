@@ -46,6 +46,9 @@ const statusCalculator = (inp) => {
 const percentageCalculator = (percentage, full, achieved) => {
   return (percentage * achieved) / full;
 };
+const monthsStartingAtMiliseconds = (date = new Date()) => {
+  return new Date(date.getFullYear(), date.getMonth(), 1).getTime();
+};
 function getNumberOfDaysInMonth(date = new Date()) {
   return new Date(date.getFullYear(), date.getMonth(), 0).getDate();
 }
@@ -61,6 +64,7 @@ export const createStudent = asyncHandler(async (req, res) => {
 
 export const getAllStudents = asyncHandler(async (req, res) => {
   const month = new Date(req.params.month).toISOString(); //frontend theke JANUARY/2022 asbe
+
   const data = await Student.find({
     'monthly.month': month,
   });
@@ -213,11 +217,40 @@ export const addStudentActivity = asyncHandler(async (req, res) => {
   res.json(updatedFile);
 });
 
-//age kichu frontend a implement kore ese then ei kaj ta complete korbo .
-export const getStudentActivity = asyncHandler(async (req, res) => {
+//student er status ta check kora lagbe
+export const qualityFinder = asyncHandler(async (req, res) => {
   const { studentId, month } = req.params;
-  const data = await StudentActivity.find();
-  res.json('i will code it later');
+  const studentData = await Student.findOne({
+    _id: studentId,
+    'monthly.month': month,
+  }).select('monthly.quality');
+  res.json({
+    quality: studentData.monthly[0].quality,
+  });
+});
+//payment status check kora lagbe
+
+//student er current month er data check kora lagbe. seitake niye client side a amra hisab korleu problem nai .
+
+export const getStudentActivity = asyncHandler(async (req, res) => {
+  const activityData = await StudentActivity.find({
+    studentId,
+    //pura ek masher full data sob e lagbe
+    $and: [
+      { createdAt: { $gte: monthsStartingAtMiliseconds(new Date(month)) } },
+      {
+        createdAt: {
+          $lte:
+            monthsStartingAtMiliseconds(new Date(month)) +
+            86400000 * getNumberOfDaysInMonth(new Date(month)),
+        },
+      },
+    ],
+  });
+
+  res.json({
+    activityData,
+  });
 });
 
 // export const test = asyncHandler(async (req, res) => {

@@ -1,9 +1,1 @@
-Issue arises : 
-1.how to rank or sort student table based on studentsActivity tables data . in a particular month. 
-2.
-
-
-
-Backend : 
-Database: 
-mongoose aggregation and pre post hook , joining data table . 
+Frontend theke jokhon ekta incoming month select korbo tokhon jodi data nau thake problem nai . but current month suru howar sathe sathei amake ashole backend a oi month er jonne sob student er ekta copy kore nite hobe. 

@@ -1,17 +1,27 @@
 import React, { useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
+import axios from 'axios';
 const BasicConfiguration = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
+  const [date, setDate] = useState('');
   const [testFullMark, setTestFullMark] = useState(0);
   const [testSubject, setTestSubject] = useState('None');
-  const [vivaAskedQuestion, setVivaAskedQuestion] = useState(0);
+  const [vivaAsked, setVivaAsked] = useState(0);
   const [homeworkGiven, setHomeWorkGiven] = useState(true);
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log(testFullMark, testSubject, vivaAskedQuestion, homeworkGiven);
+    const basicConfig = async () => {
+      await axios.post('api/student/basicconfig', {
+        date,
+        homeworkGiven,
+        vivaAsked,
+        testFullMark,
+        testSubject,
+      });
+    };
+    basicConfig();
   };
   return (
     <>
@@ -27,6 +37,15 @@ const BasicConfiguration = () => {
         <Form onSubmit={submitHandler}>
           <Modal.Body>
             <Form.Group>
+              <Form.Label>To Be Executed on: </Form.Label>
+              <Form.Control
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group>
               <Form.Label>Homework Given</Form.Label>
               <Form.Select onChange={(e) => setHomeWorkGiven(e.target.value)}>
                 {' '}
@@ -38,8 +57,8 @@ const BasicConfiguration = () => {
             <Form.Group>
               <Form.Label>Viva Asked Questions</Form.Label>
               <Form.Control
-                onChange={(e) => setVivaAskedQuestion(e.target.value)}
-                value={vivaAskedQuestion}
+                onChange={(e) => setVivaAsked(e.target.value)}
+                value={vivaAsked}
               ></Form.Control>
             </Form.Group>
 
@@ -53,8 +72,10 @@ const BasicConfiguration = () => {
             <Form.Group>
               <Form.Label>Test Subject</Form.Label>
               <Form.Select onChange={(e) => setTestSubject(e.target.value)}>
-                {testFullMark == 0 && <option value={testSubject}>None</option>}
-                {testFullMark != 0 && (
+                {testFullMark === 0 && (
+                  <option value={testSubject}>None</option>
+                )}
+                {testFullMark !== 0 && (
                   <>
                     <option value="Physics">Physics</option>
                     <option value="Math">Math</option>

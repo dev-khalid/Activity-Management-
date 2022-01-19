@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import { Table, Button, Form, Modal, Row, Col } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Table, Button, Form, Modal, Spinner } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import BasicConfiguration from '../BasicConfiguration';
-const quality = ['Best', 'Good', 'Medium', 'Bad', 'Very Bad'];
+import { useAuth } from '../../contexts/AuthContext';
+import axios from 'axios';
+// const quality = ['Best', 'Good', 'Medium', 'Bad', 'Very Bad'];
+const admin = '11XWcMJ3cQdFy5U2zODmAAawWCm1';
 const Month = [
   'January',
   'February',
@@ -18,40 +21,79 @@ const Month = [
   'December',
 ];
 const currentYear = new Date().getFullYear();
-const Year = ['2022']; //i will make the year dynamic next.
+const currentMonth = `${
+  Month[new Date().getMonth()]
+}-${new Date().getFullYear()}`;
+// const Year = ['2022']; //i will make the year dynamic next.
 //backend theke data asbei sorted hoye so problem nai .
+
 const Students = () => {
   const [name, setName] = useState('');
   const [show, setShow] = useState(false);
+  const [month, setMonth] = useState(currentMonth);
+  const [loading, setLoading] = useState(false);
+  const [students, setStudents] = useState([]);
+  const { currentUser } = useAuth();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const updateHandler = (studentName) => {
-    setShow(true); 
-    setName(studentName); 
-    
+  const getAllStudent = async () => {
+    setLoading(true);
+    const { data } = await axios.get(`api/student/${month}`);
+    function compare(a, b) { 
+      if (
+        a.monthly[0].regularPercentage + a.monthly[0].examPercentage <
+        b.monthly[0].regularPercentage + b.monthly[0].examPercentage
+      ) {
+        return 1;
+      }
+      if (
+        a.monthly[0].regularPercentage + a.monthly[0].examPercentage >
+        b.monthly[0].regularPercentage + b.monthly[0].examPercentage
+      ) {
+        return -1;
+      }
+      return 0;
+    }
+
+    data.sort(compare);
+    setStudents(data);
+    setLoading(false);
   };
-  const deleteHandler = () => {
+  useEffect(() => {
+    getAllStudent();
+  }, [month]);
+
+  const updateHandler = (studentName) => {
+    setShow(true);
+    setName(studentName);
+  };
+  const deleteHandler = (studentId) => {
     if (window.confirm('Are you sure  want to delete this')) {
-      console.log('Data deleted')
+      console.log('Data deleted');
     } else {
       console.log('Denied');
     }
   };
   const addStudentHandler = (e) => {
-    e.prevenetDefault();
+    e.preventDefault(); 
+    const createStudent = async () => {
+      const { data } = await axios.post('api/student', {
+        name,
+        month,
+      });
+    };
+    createStudent();
+    getAllStudent();
   };
   const monthHandler = (e) => {
     const selectedDate = e.target.value;
     if (selectedDate == 'Select Month') {
-      alert('Access Denied');
+      alert('Please Select a valid month');
     } else {
-      console.log('api call will go here');
-
-      /**@TODO 1.Backend a dekhte hobe jei date dewa hocche tar age kono student createdAt hoiche kina . jodi hoy tahole tar current month er details ante hobe. 2.Current Month er details bolte ante hobe tar STATUS,RANK.And ready korte hobe tar Selected month er history pdf.*/
+      setMonth(selectedDate);
     }
-    //here the api call will go .
   };
 
   return (
@@ -102,12 +144,24 @@ const Students = () => {
         >
           <option>Select Month</option>
           {Month.map((m, id) => (
-            <option key={id} value={`${m}/${currentYear}`}>
+            <option key={id} value={`${m}-${currentYear}`}>
               {m}/{currentYear}
             </option>
           ))}
         </Form.Select>
       </Form>
+      {loading && (
+        <h3 className="d-flex justify-content-center py-3">
+          <Spinner
+            animation="grow"
+            variant="primary"
+            style={{
+              width: '150px',
+              height: '150px',
+            }}
+          />
+        </h3>
+      )}
 
       <Table
         style={{
@@ -127,114 +181,59 @@ const Students = () => {
             <th style={{ width: '200px' }}>Actions</th>
           </tr>
         </thead>
+
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>Faima Ahmed</td>
-            <td>
-              <Button as={NavLink} to="/details">
-                Details
-              </Button>
-            </td>
-            <td>
-              <strong className="text-primary">Very Very Best</strong>
-            </td>
-            <td>
-              <Button className="mx-1" onClick={updateHandler}>
-                <i className="fas fa-pen"></i>
-              </Button>
-              <Button className="mx-1" variant="danger" onClick={deleteHandler}>
-                <i className="fas fa-trash-alt"></i>
-              </Button>
-              <Button variant="info">
-                <i className="fas fa-file-pdf"></i>
-              </Button>
-            </td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Mursalin</td>
-            <td>
-              <Button>Details</Button>
-            </td>
-            <td>
-              <strong className="text-info">Good</strong>
-            </td>
-            <td>
-              <Button className="mx-1">
-                <i className="fas fa-pen"></i>
-              </Button>
-              <Button className="mx-1" variant="danger">
-                <i className="fas fa-trash-alt"></i>
-              </Button>
-              <Button variant="info">
-                <i className="fas fa-file-pdf"></i>
-              </Button>
-            </td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Taniya</td>
-            <td>
-              <Button>Details</Button>
-            </td>
-            <td>
-              <strong className="text-success">Medium</strong>
-            </td>
-            <td>
-              <Button className="mx-1">
-                <i className="fas fa-pen"></i>
-              </Button>
-              <Button className="mx-1" variant="danger">
-                <i className="fas fa-trash-alt"></i>
-              </Button>
-              <Button variant="info">
-                <i className="fas fa-file-pdf"></i>
-              </Button>
-            </td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td>Sumiya</td>
-            <td>
-              <Button>Details</Button>
-            </td>
-            <td>
-              <strong className="text-warning">Bad</strong>
-            </td>
-            <td>
-              <Button className="mx-1">
-                <i className="fas fa-pen"></i>
-              </Button>
-              <Button className="mx-1" variant="danger">
-                <i className="fas fa-trash-alt"></i>
-              </Button>
-              <Button variant="info">
-                <i className="fas fa-file-pdf"></i>
-              </Button>
-            </td>
-          </tr>
-          <tr>
-            <td>5</td>
-            <td>Sabit</td>
-            <td>
-              <Button>Details</Button>
-            </td>
-            <td>
-              <strong className="text-danger">Very Bad</strong>
-            </td>
-            <td>
-              <Button className="mx-1">
-                <i className="fas fa-pen"></i>
-              </Button>
-              <Button className="mx-1" variant="danger">
-                <i className="fas fa-trash-alt"></i>
-              </Button>
-              <Button variant="info">
-                <i className="fas fa-file-pdf"></i>
-              </Button>
-            </td>
-          </tr>
+          {!loading && students.length > 0 ? (
+            <>
+              {students.map((student, id) => (
+                <tr key={id}>
+                  <td>{id + 1}</td>
+                  <td>{student.name}</td>
+                  <td>
+                    <Button as={NavLink} to={`/details/${student._id}`}>
+                      Details
+                    </Button>
+                  </td>
+                  <td>
+                    <strong className="text-primary">
+                      {student.monthly[0].quality}
+                    </strong>
+                  </td>
+                  <td>
+                    {currentUser.uid === admin && (
+                      <>
+                        <Button
+                          className="mx-1"
+                          onClick={() => updateHandler(student.name)}
+                        >
+                          <i className="fas fa-pen"></i>
+                        </Button>
+                        <Button
+                          className="mx-1"
+                          variant="danger"
+                          onClick={() => deleteHandler(student._id)}
+                        >
+                          <i className="fas fa-trash-alt"></i>
+                        </Button>
+                      </>
+                    )}
+
+                    <Button variant="info">
+                      <i className="fas fa-file-pdf"></i>
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </>
+          ) : (
+            <tr>
+              {!loading && students.length == 0 ? (
+                <td>No Data found!</td>
+              ) : (
+                <td colSpan={5}>Loading Please Wait...</td>
+              )}
+            </tr>
+          )}
         </tbody>
       </Table>
     </>

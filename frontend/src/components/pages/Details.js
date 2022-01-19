@@ -1,10 +1,14 @@
 import React, { useState, useeffect } from 'react';
 import { Table, Badge, Button, Form, Modal } from 'react-bootstrap';
 import Summary from '../Summary';
+import { useParams } from 'react-router-dom';
 
 /** @TODO 1.FIRST A DATABASE THEKE JINISH GULA ANTE HOBE . 2.jodi viva aksed questions thake tahole ekhane modal er moddhe viva answered appeared hobe . 3.jodi test full mark thake tahole amar ekhane test score appear hobe .  */
 
-const Details = ({ name = 'bayzit' }) => {
+const Details = () => {
+  const { studentId } = useParams();
+  
+  const name = 'akash';
   const [show, setShow] = useState(false);
   const [attandance, setAttandance] = useState(true);
   const [homework, setHomeWork] = useState('None');
@@ -19,7 +23,7 @@ const Details = ({ name = 'bayzit' }) => {
   };
   return (
     <>
-      <Summary />
+      <Summary name={name} />
       <Button className="mt-3">Download Statistics</Button>
       {/**@TODO this section is only for admin */}
       <Button className="mt-3 mx-3 " onClick={handleShow}>
