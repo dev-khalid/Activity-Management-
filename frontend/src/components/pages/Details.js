@@ -4,11 +4,10 @@ import StudentInfo from '../StudentInfo';
 import { useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import ActivitySummary from '../ActivitySummary';
-import { disabled } from 'express/lib/application';
-
-/** @TODO 1.FIRST A DATABASE THEKE JINISH GULA ANTE HOBE . 2.jodi viva aksed questions thake tahole ekhane modal er moddhe viva answered appeared hobe . 3.jodi test full mark thake tahole amar ekhane test score appear hobe .  */
+import { useAuth } from '../../contexts/AuthContext';
 
 const Details = () => {
+  const { currentUser } = useAuth();
   const { state } = useLocation();
   const { studentId, month, name } = state;
   const [basicConfig, setBasicConfig] = useState('');
@@ -80,9 +79,11 @@ const Details = () => {
       <Button className="mt-3">Download Statistics</Button>
       {/**@TODO this section is only for admin */}
 
-      <Button className="mt-3 mx-3 " disabled={noConfig} onClick={handleShow}>
-        Add Todays Data
-      </Button>
+      {currentUser && currentUser.uid == process.env.REACT_APP_ADMIN && (
+        <Button className="mt-3 mx-3 " disabled={noConfig} onClick={handleShow}>
+          Add Todays Data
+        </Button>
+      )}
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Add Activity of {name}</Modal.Title>

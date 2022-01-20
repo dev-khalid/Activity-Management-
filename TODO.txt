@@ -1,1 +1,5 @@
-Frontend theke jokhon ekta incoming month select korbo tokhon jodi data nau thake problem nai . but current month suru howar sathe sathei amake ashole backend a oi month er jonne sob student er ekta copy kore nite hobe. 
+1.New month suru howar sathe sathe protita student er moddhe oi month related ekta data push korte hobe. 
+2.payment method add korte hobe. 
+3.admin er access thakbe sudhu kichu kichu field a 
+4.pdf create kore seitake abar downloadAble korte hobe. 
+5.pdf ta sudhu paid status on thaklei dekha jabe. 

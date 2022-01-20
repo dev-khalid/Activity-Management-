@@ -95,20 +95,22 @@ const Students = () => {
       setMonth(selectedDate);
     }
   };
-
+  console.log(currentUser);
   return (
     <>
-      <div className="d-flex justify-content-evenly">
-        <div>
-          <Button variant="primary" onClick={handleShow}>
-            Add Student
-          </Button>
+      {currentUser && currentUser.uid == process.env.REACT_APP_ADMIN && (
+        <div className="d-flex justify-content-evenly">
+          <div>
+            <Button variant="primary" onClick={handleShow}>
+              Add Student
+            </Button>
+          </div>
+          <div>
+            {' '}
+            <BasicConfiguration />
+          </div>
         </div>
-        <div>
-          {' '}
-          <BasicConfiguration />
-        </div>
-      </div>
+      )}
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
