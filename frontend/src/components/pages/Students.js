@@ -95,7 +95,6 @@ const Students = () => {
       setMonth(selectedDate);
     }
   };
-  console.log(currentUser);
   return (
     <>
       {currentUser && currentUser.uid == process.env.REACT_APP_ADMIN && (
@@ -210,23 +209,24 @@ const Students = () => {
                     </strong>
                   </td>
                   <td>
-                    {currentUser.uid === admin && (
-                      <>
-                        <Button
-                          className="mx-1"
-                          onClick={() => updateHandler(student.name)}
-                        >
-                          <i className="fas fa-pen"></i>
-                        </Button>
-                        <Button
-                          className="mx-1"
-                          variant="danger"
-                          onClick={() => deleteHandler(student._id)}
-                        >
-                          <i className="fas fa-trash-alt"></i>
-                        </Button>
-                      </>
-                    )}
+                    {currentUser &&
+                      currentUser.uid === process.env.REACT_APP_ADMIN && (
+                        <>
+                          <Button
+                            className="mx-1"
+                            onClick={() => updateHandler(student.name)}
+                          >
+                            <i className="fas fa-pen"></i>
+                          </Button>
+                          <Button
+                            className="mx-1"
+                            variant="danger"
+                            onClick={() => deleteHandler(student._id)}
+                          >
+                            <i className="fas fa-trash-alt"></i>
+                          </Button>
+                        </>
+                      )}
 
                     <Button variant="info">
                       <i className="fas fa-file-pdf"></i>
