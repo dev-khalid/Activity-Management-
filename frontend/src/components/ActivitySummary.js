@@ -24,12 +24,12 @@ const ActivitySummary = ({ activityData }) => {
     tl = 0,
     ta = 0;
   //no problem it will work in a blocking behaviour .
-  for (let i = 0; i < activityData.length; i++) { 
+  for (let i = 0; i < activityData.length; i++) {
     if (activityData[i].testFullMark > 0) {
       tt++;
       tfm += activityData[i].testFullMark;
       ts += activityData[i].testScore;
-      if (activityData[i].attadance) {
+      if (activityData[i].attandance) {
         ta++;
       }
     }
@@ -38,7 +38,7 @@ const ActivitySummary = ({ activityData }) => {
       hmd += activityData[i].homework;
     }
     if (activityData[i].attandance) {
-      at++; 
+      at++;
       if (activityData[i].late > 0) {
         tl += activityData[i].late;
       }
@@ -48,45 +48,40 @@ const ActivitySummary = ({ activityData }) => {
       vAnswered += activityData[i].vivaAnswered;
     }
   }
-  console.log(tt, tfm, ts, hmc, hmd, at, vAsked, vAnswered, tl, ta);
-
+  console.log(vAsked, vAnswered);
   if (at > 0) {
     avgAttandance = Math.ceil(at / activityData.length);
-    totalLate = tl;
     avgLate = Math.ceil(tl / at);
   }
-  if (tt) {
-    avgTestScore = Math.ceil(tfm / tt);
+  if (ta) {
+    avgTestScore = Math.ceil((100 * ts) / tfm);
   }
   if (hmc) {
     avgHomeworkDone = Math.ceil(hmd / hmc);
   }
   if (vAsked) {
-    avgVivaPerformance = Math.ceil(vAnswered / vAsked);
-  }
-  if (ta) {
-    testAttanded = ta;
+    avgVivaPerformance = Math.ceil((vAnswered * 100) / vAsked);
   }
   return (
     <div>
       <span>Average Late time:</span>{' '}
       <strong className="text-danger">{avgLate} mins</strong> <br />
       <span>Total wasted time:</span>{' '}
-      <strong className="text-danger">{totalLate} mins</strong> <br />
+      <strong className="text-danger">{tl} mins</strong> <br />
       <span>Attandance Ratio: </span>
-      <strong className="text-info">{avgAttandance*100}%</strong>
+      <strong className="text-info">{avgAttandance * 100}%</strong>
       <br />
       <span>Home Work Done : </span>
       <strong className="text-info"> {avgHomeworkDone}% </strong>
       <br />
       <span>Viva Performance: </span>
-      <strong className="text-info">{avgVivaPerformance * 100}%</strong> <br />
+      <strong className="text-info">{avgVivaPerformance}%</strong> <br />
       <span>Test Score: </span>
       <strong className="text-primary">{avgTestScore}%</strong> <br />
       <span>Test Taken: </span>
       <strong className="text-primary">
         {' '}
-        {testAttanded}/{testTaken}
+        {ta}/{tt}
       </strong>{' '}
       <br />
     </div>
@@ -94,3 +89,4 @@ const ActivitySummary = ({ activityData }) => {
 };
 
 export default ActivitySummary;
+/**@DEBUGGING_DONE */

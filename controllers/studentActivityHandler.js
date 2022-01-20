@@ -28,15 +28,16 @@ const averageCalculator = (prev, current) => {
 const statusCalculator = (inp) => {
   let num = inp * 100;
   let status = '';
-  if (num >= 1 * process.env.Status_Best) {
+
+  if (num >= 85) {
     status = 'Best';
-  } else if (num >= 1 * process.env.Status_Good) {
+  } else if (num >= 80) {
     status = 'Good';
-  } else if (num >= 1 * process.env.Status_Medium) {
+  } else if (num >= 65) {
     status = 'Medium';
-  } else if (num >= 1 * process.env.Status_Bad) {
+  } else if (num >= 40) {
     status = 'Bad';
-  } else if (num >= 1 * process.env.Status_Very_Bad) {
+  } else {
     status = 'Very Bad';
   }
   return status;
@@ -113,15 +114,14 @@ export const basicConfig = asyncHandler(async (req, res) => {
 
 export const addStudentActivity = asyncHandler(async (req, res) => {
   const date = new Date(req.body.date).toISOString();
+  console.log('what about this date', date);
   const month = new Date(
     `${Month[new Date(date).getMonth()]}-${new Date(date).getFullYear()}`
   ).toISOString();
 
   const { homeworkGiven, vivaAsked, testFullMark, testSubject } =
-    await BasicConfig.findOne({ date }).select(
-      'homeworkGiven vivaAsked testFullMark testSubject'
-    );
-  console.log(homeworkGiven, vivaAsked, testFullMark, testSubject);
+    await BasicConfig.findOne({ date });
+    
   const { studentId, attandance, homework, late, vivaAnswered, testScore } =
     req.body;
   const data = await StudentActivity.create({
@@ -199,7 +199,6 @@ export const addStudentActivity = asyncHandler(async (req, res) => {
     studentData.monthly[0].regularPercentage,
     calcPercentage
   );
-
   let status = '';
   if (examPercentage) {
     status = statusCalculator(

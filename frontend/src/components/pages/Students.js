@@ -236,7 +236,7 @@ const Students = () => {
           ) : (
             <tr>
               {!loading && students.length == 0 ? (
-                <td>No Data found!</td>
+                <td colSpan={5}>No Data found!</td>
               ) : (
                 <td colSpan={5}>Loading Please Wait...</td>
               )}

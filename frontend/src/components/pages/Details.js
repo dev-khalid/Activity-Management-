@@ -4,13 +4,16 @@ import StudentInfo from '../StudentInfo';
 import { useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import ActivitySummary from '../ActivitySummary';
+import { disabled } from 'express/lib/application';
 
 /** @TODO 1.FIRST A DATABASE THEKE JINISH GULA ANTE HOBE . 2.jodi viva aksed questions thake tahole ekhane modal er moddhe viva answered appeared hobe . 3.jodi test full mark thake tahole amar ekhane test score appear hobe .  */
 
 const Details = () => {
   const { state } = useLocation();
   const { studentId, month, name } = state;
+  const [basicConfig, setBasicConfig] = useState('');
   const [loadingActivity, setLoadingActivity] = useState(true);
+  const [date, setDate] = useState({});
   const [show, setShow] = useState(false);
   const [attandance, setAttandance] = useState(true);
   const [homework, setHomeWork] = useState(0);
@@ -18,10 +21,22 @@ const Details = () => {
   const [testScore, setTestScore] = useState(0);
   const [vivaAnswered, setVivaAnswered] = useState(0);
   const [activityData, setActivityData] = useState([]);
-
+  const [loadingConfig, setLoadingConfig] = useState(true);
+  const [noConfig, setNoConfig] = useState(true);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
+  const getBasicConfig = async () => {
+    setLoadingConfig(true);
+    const currentDate = `${new Date().toISOString().split('T')[0]}`;
+    const { data } = await axios.get(`api/student/basicconfig/${currentDate}`);
+    setBasicConfig(data);
+    if (data) {
+      setNoConfig(false);
+    } else {
+      setNoConfig(true);
+    }
+    setLoadingConfig(false);
+  };
   const getStudentActivityData = async () => {
     setLoadingActivity(true);
     const { data } = await axios.get(
@@ -32,13 +47,14 @@ const Details = () => {
   };
   useEffect(() => {
     getStudentActivityData();
+    getBasicConfig();
   }, [studentId, month]);
-  console.log(activityData);
+
   const submitHandler = (e) => {
     e.preventDefault();
     const addData = async () => {
-      const { data } = await axios.post('api/student/studentactivity', {
-        date: new Date().toISOString().split('T')[0],
+      await axios.post('api/student/studentactivity', {
+        date,
         studentId,
         attandance,
         homework,
@@ -46,7 +62,6 @@ const Details = () => {
         vivaAnswered,
         testScore,
       });
-      console.log(data);
     };
     addData();
     getStudentActivityData();
@@ -64,7 +79,8 @@ const Details = () => {
       )}
       <Button className="mt-3">Download Statistics</Button>
       {/**@TODO this section is only for admin */}
-      <Button className="mt-3 mx-3 " onClick={handleShow}>
+
+      <Button className="mt-3 mx-3 " disabled={noConfig} onClick={handleShow}>
         Add Todays Data
       </Button>
       <Modal show={show} onHide={handleClose}>
@@ -85,6 +101,16 @@ const Details = () => {
               </Form.Select>
             </Form.Group>
             {/**@TODO homwwork conditionally render korte hobe. */}
+            <Form.Group className="mb-3" controlId="date">
+              <Form.Label>Date</Form.Label>
+              <Form.Control
+                type="date"
+                value={date}
+                onChange={(e) => {
+                  setDate(e.target.value);
+                }}
+              ></Form.Control>
+            </Form.Group>
             <Form.Group className="mb-3" controlId="homework">
               <Form.Label>Home Work</Form.Label>
               <Form.Control
