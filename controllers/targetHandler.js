@@ -42,9 +42,13 @@ export const getTarget = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllTargets = asyncHandler(async (req, res) => {
-  const { userId } = req.params; 
+  const { userId } = req.params;
+  const { accomplished } = req.query;
+  console.log(accomplished);
   const data = await Target.find({
     userId,
-  }).countDocuments(); 
+    accomplished,
+  }).countDocuments();
+  console.log(data);
   res.json(data);
 });
