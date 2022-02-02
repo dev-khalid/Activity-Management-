@@ -5,10 +5,14 @@ const PaginationComponent = ({ activePage, setPage, userId, fetchFrom }) => {
   const [availablePages, setAvailablePages] = useState(0);
   useEffect(() => {
     const allTArgets = async () => {
-      const { data } = await axios.get(`api/${fetchFrom}/count/${userId}`);
+      const { data } = await axios.get(`api/${fetchFrom}/count/${userId}`); 
+
       if (data > process.env.REACT_APP_DOCUMENTS_PER_PAGE)
         setAvailablePages(
-          Math.ceil(10 / process.env.REACT_APP_DOCUMENTS_PER_PAGE)
+          Math.ceil((data * 1) / process.env.REACT_APP_DOCUMENTS_PER_PAGE)
+        );
+        console.log(
+          Math.ceil((data * 1) / process.env.REACT_APP_DOCUMENTS_PER_PAGE)
         );
     };
     allTArgets();

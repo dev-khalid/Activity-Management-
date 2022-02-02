@@ -176,12 +176,14 @@ const Target = () => {
                   <Card.Body>
                     <Card.Title>{target.title}</Card.Title>
                     <Card.Text>
-                      Deadline:{' '}
+                      Deadline: {console.log(target.deadline)}
                       <strong
                         className={
-                          new Date().toDateString() >
-                          new Date(target.deadline).toDateString()
-                            ? 'text-danger'
+                          new Date().toISOString() > target.deadline
+                            ? new Date().toDateString() ==
+                              new Date(target.deadline).toDateString()
+                              ? 'text-success'
+                              : 'text-danger'
                             : 'text-success'
                         }
                       >
