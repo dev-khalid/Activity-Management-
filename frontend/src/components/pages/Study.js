@@ -16,6 +16,10 @@ import {
 } from 'chart.js';
 import MonthlyData from '../MonthlyData';
 import * as Push from 'push.js';
+
+import '../../FirebaseConfiguration';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -26,6 +30,18 @@ ChartJS.register(
 );
 
 const Study = () => {
+  const messaging = getMessaging();
+  getToken(messaging, {
+    vapidKey:
+      'BAQYNZDxJORGqZHeXIHvnFa2_rr3LBsKyQOLDRaE0vruP8rCwpnNgx6xSxJkKOByqmcHj2HPlvjWT9MNnjDZ6TI',
+  })
+    .then((token) => {
+      console.log('Token : ', token);
+    })
+    .catch((err) => {
+      console.log('whats the error', err);
+    });
+
   const [show, setShow] = useState(false); //this state is used for modal show
   const [targetHour, setTargetHour] = useState(0);
   const [hasTarget, setHasTarget] = useState(false);
@@ -67,6 +83,7 @@ const Study = () => {
     };
     todaysData();
   }, [currentUser]);
+
   const submitHandler = (e) => {
     e.preventDefault();
     if (targetHour > 0 && targetHour < 24) {

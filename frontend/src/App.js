@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Login from './components/pages/Login';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Study from './components/pages/Study';
@@ -9,7 +9,14 @@ import Target from './components/pages/Target';
 import Achievement from './components/pages/Achievement';
 import Students from './components/pages/Students';
 import Details from './components/pages/Details';
+import swDev from './swDev';
 function App() {
+  useEffect(() => {
+    setInterval(
+      () => swDev({ title: 'Khalid is testing Activity Management' }),
+      2000
+    );
+  }, []);
   return (
     <Router>
       <NavBar />

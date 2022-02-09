@@ -10,7 +10,8 @@
     "mongoose": "^6.1.5",
     "nodemon": "^2.0.15",
     "promisify": "^0.0.3",
-    "react-firebaseui": "^6.0.0"
+    "react-firebaseui": "^6.0.0",
+    "web-push": "^3.4.5"
   },
   "scripts": {
     "start": "nodemon server.js",

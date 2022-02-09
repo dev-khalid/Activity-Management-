@@ -2,6 +2,7 @@ import express from 'express';
 import {} from 'dotenv/config';
 import mongoose from 'mongoose';
 import mongodb from 'mongodb';
+import webpush from 'web-push';
 import studyRoute from './routes/studyRoute.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -35,6 +36,33 @@ app.use('/api/study', studyRoute);
 app.use('/api/target', targetRoute);
 app.use('/api/achievement', achievementRoute);
 app.use('/api/student', studentRoute);
+
+//pushnig notification
+
+// Public Key:
+// BKSDIGUvwBlG2YZupbSf6lrkQL0RKFoETXmi-BRKyvHe23Q2l2i8nC1MetSkK5HwU8ahaifP0Kn9OKqjQ9_XvCg
+
+// Private Key:
+// gWOsk0I9a4hLmY9MR-5ww8kjtYNfvdaAEaxQ7OaP8Xw
+
+const publicVapidKey =
+  'BKSDIGUvwBlG2YZupbSf6lrkQL0RKFoETXmi-BRKyvHe23Q2l2i8nC1MetSkK5HwU8ahaifP0Kn9OKqjQ9_XvCg';
+const privateVapidKey = 'gWOsk0I9a4hLmY9MR-5ww8kjtYNfvdaAEaxQ7OaP8Xw';
+webpush.setVapidDetails(
+  'mailto:khalidhossain727@gmail.com',
+  publicVapidKey,
+  privateVapidKey
+);
+app.use('/api/subscribe', (req, res) => {
+  const notificationObj = req.body;
+  const { subscription } = notificationObj;
+  const payload = JSON.stringify(notificationObj.payload);
+  res.status(201);
+  webpush
+    .sendNotification(subscription, payload)
+    .catch((err) => console.error(err));
+});
+
 if (process.env.NODE_ENV == 'production') {
   app.use(express.static(path.join(__dirname, '/frontend/build')));
 
