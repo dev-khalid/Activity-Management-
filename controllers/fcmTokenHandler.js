@@ -7,9 +7,4 @@ export const storeFcmToken = expressAsyncHandler(async (req, res) => {
   res.status(201).end();
 });
 
-export const getFcmTokens = expressAsyncHandler(async (req, res) => {
-  const tokens = await FcmToken.find().select('token -_id');
-  const data = tokens.map((token) => token.token);
   
-  res.json(data);
-});

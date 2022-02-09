@@ -10,9 +10,19 @@ import Achievement from './components/pages/Achievement';
 import Students from './components/pages/Students';
 import Details from './components/pages/Details';
 // import swDev from './swDev';
+import axios from 'axios';
 function App() {
+  useEffect(() => {
+    const sendToAll = async () => {
+      await axios.post('api/notification/sendtoall', {
+        title: 'Khalid vai test korche ',
+        text: 'ekta hoilei hoilo',
+        icon: 'https://cms-assets.tutsplus.com/cdn-cgi/image/width=850/uploads/users/523/posts/32694/final_image/tutorial-preview-large.png',
+      });
+    };
 
-  
+    sendToAll();
+  }, []);
 
   return (
     <Router>
