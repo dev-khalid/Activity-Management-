@@ -4,6 +4,23 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AuthProvider } from './contexts/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+
+const messaging = getMessaging();
+getToken(messaging, {
+  vapidKey:
+    'BAQYNZDxJORGqZHeXIHvnFa2_rr3LBsKyQOLDRaE0vruP8rCwpnNgx6xSxJkKOByqmcHj2HPlvjWT9MNnjDZ6TI',
+})
+  .then((token) => {
+    //eikhan theke ekta token registration complete korte hobe arki . 
+    console.log('Token : ', token);
+  })
+  .catch((err) => {
+    console.log('whats the error', err);
+  });
+
+
 ReactDOM.render(
   <React.StrictMode>
     <AuthProvider>
