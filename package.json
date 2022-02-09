@@ -8,6 +8,7 @@
     "express-async-handler": "^1.2.0",
     "mongodb": "^4.3.0",
     "mongoose": "^6.1.5",
+    "node-fetch": "^3.2.0",
     "nodemon": "^2.0.15",
     "promisify": "^0.0.3",
     "react-firebaseui": "^6.0.0",

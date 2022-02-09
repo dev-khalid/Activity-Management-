@@ -10,7 +10,7 @@ import path from 'path';
 import targetRoute from './routes/targetRoute.js';
 import achievementRoute from './routes/achievementRoute.js';
 import studentRoute from './routes/studentRoute.js';
-
+import notificationRoute from './routes/notificationRoute.js';
 const __dirname = path.resolve();
 
 //DATABASE CONNECTION
@@ -36,6 +36,7 @@ app.use('/api/study', studyRoute);
 app.use('/api/target', targetRoute);
 app.use('/api/achievement', achievementRoute);
 app.use('/api/student', studentRoute);
+app.use('/api/notification', notificationRoute);
 
 //pushnig notification
 

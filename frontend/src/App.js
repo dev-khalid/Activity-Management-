@@ -9,14 +9,21 @@ import Target from './components/pages/Target';
 import Achievement from './components/pages/Achievement';
 import Students from './components/pages/Students';
 import Details from './components/pages/Details';
-import swDev from './swDev';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+// import swDev from './swDev';
 function App() {
-  useEffect(() => {
-    setInterval(
-      () => swDev({ title: 'Khalid is testing Activity Management' }),
-      2000
-    );
-  }, []);
+  const messaging = getMessaging();
+  getToken(messaging, {
+    vapidKey:
+      'BAQYNZDxJORGqZHeXIHvnFa2_rr3LBsKyQOLDRaE0vruP8rCwpnNgx6xSxJkKOByqmcHj2HPlvjWT9MNnjDZ6TI',
+  })
+    .then((token) => {
+      console.log('Token : ', token);
+    })
+    .catch((err) => {
+      console.log('whats the error', err);
+    });
+
   return (
     <Router>
       <NavBar />
