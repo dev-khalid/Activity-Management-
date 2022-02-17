@@ -81,9 +81,20 @@ const Study = () => {
           userId: currentUser.uid,
           targetHour,
         });
+        toast.info(targetHour+' Hour Addedd!', {
+          position: 'top-center',
+          icon: '🚀',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         setHasTarget(true);
         setTargetHour(data.targetHour);
         setCompleted(data.completed);
+
       };
       submitTarget();
     } else {
@@ -99,6 +110,16 @@ const Study = () => {
           userId: currentUser.uid,
           targetHour,
         });
+         toast( targetHour + ' Hour Updated!', {
+           position: 'top-center',
+           autoClose: 5000,
+           icon: '🚀',
+           hideProgressBar: false,
+           closeOnClick: true,
+           pauseOnHover: true,
+           draggable: true,
+           progress: undefined,
+         });
         setHasTarget(true);
         setTargetHour(data.targetHour);
       };
@@ -114,7 +135,7 @@ const Study = () => {
       parseInt(completed) + parseInt(currentStudiedHours) >
       parseInt(targetHour)
     ) {
-      alert(
+      toast.warn(
         'Your completed hours exceeds target hour. Please update target hours first.'
       );
     } else {
@@ -123,6 +144,16 @@ const Study = () => {
           userId: currentUser.uid,
           completed: parseInt(completed) + parseInt(currentStudiedHours),
         });
+         toast(currentStudiedHours + ' Hour Added!', {
+           position: 'top-center',
+           icon: '🚀',
+           autoClose: 5000,
+           hideProgressBar: false,
+           closeOnClick: true,
+           pauseOnHover: true,
+           draggable: true,
+           progress: undefined,
+         });
         setCompleted(data.completed);
         setCurrentStudiedHours(0);
         setUpdateBarchart(updateBarChart + 1);
