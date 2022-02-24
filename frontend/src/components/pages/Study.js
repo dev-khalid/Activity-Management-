@@ -16,7 +16,7 @@ import {
 } from 'chart.js';
 import MonthlyData from '../MonthlyData';
 import * as Push from 'push.js';
-
+import moment from 'moment';
 import '../../FirebaseConfiguration';
 
 import DatePicker from 'react-datepicker';
@@ -58,7 +58,7 @@ const Study = () => {
   const [completed, setCompleted] = useState(0);
   const [currentStudiedHours, setCurrentStudiedHours] = useState(0);
   const [updateBarChart, setUpdateBarchart] = useState(0);
-  const [totalStudiedHoursOfCM, setTotalStudiedHoursOfCM] = useState(undefined);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const { currentUser } = useAuth();
   const handleClose = () => setShow(false); //this state is used for modal
   const handleShow = () => setShow(true); //used for modal
@@ -94,18 +94,8 @@ const Study = () => {
     };
     todaysData();
   }, [currentUser]);
-  // useEffect(() => {
-  //   const totalStudiedHours = async () => {
-  //     const { data } = await axios.get(
-  //       `api/study/monthlyStudyHours/${
-  //         new Date().getMonth() + 1
-  //       }/${new Date().getFullYear()}/${currentUser.uid}`
-  //     );
-  //     setTotalStudiedHoursOfCM(data.hours);
-  //   };
-  //   totalStudiedHours();
-  // }, [completed]);
 
+  //this one is up to date
   const submitHandler = (e) => {
     e.preventDefault();
     if (targetHour > 0 && targetHour < 24) {
@@ -113,6 +103,7 @@ const Study = () => {
         const { data } = await axios.post(`/api/study`, {
           userId: currentUser.uid,
           targetHour,
+          date: selectedDate,
         });
         toast.info(targetHour + ' Hour Addedd!', {
           position: 'top-center',
@@ -134,6 +125,8 @@ const Study = () => {
       setTargetHour(0);
     }
   };
+
+  //this one is also up to date
   const updateTargetHandler = (e) => {
     e.preventDefault();
     if (targetHour > 0 && targetHour < 24) {
@@ -141,6 +134,7 @@ const Study = () => {
         const { data } = await axios.patch('api/study/target', {
           userId: currentUser.uid,
           targetHour,
+          date: selectedDate,
         });
         toast(targetHour + ' Hour Updated!', {
           position: 'top-center',
@@ -161,6 +155,8 @@ const Study = () => {
       setTargetHour(0);
     }
   };
+
+  //this one is up to date
   const currentStudiedHourHandler = (e) => {
     e.preventDefault();
     if (
@@ -175,6 +171,7 @@ const Study = () => {
         const { data } = await axios.patch('api/study/completed', {
           userId: currentUser.uid,
           completed: parseInt(completed) + parseInt(currentStudiedHours),
+          date: selectedDate,
         });
         toast(currentStudiedHours + ' Hour Added!', {
           position: 'top-center',
@@ -209,23 +206,29 @@ const Study = () => {
 
   return (
     <Container className="py-3">
-      {totalStudiedHoursOfCM && (
-        <h5 style={{ textAlign: 'center', marginBottom: '20px' }}>
-          Total Studied Hours of {months[Number(new Date().getMonth())]} -{' '}
-          {totalStudiedHoursOfCM} Hours
-        </h5>
-      )}
+      <div style={{ paddingBottom: '20px' }}>
+        <div style={{ fontWeight: '700', marginBottom: '8px' }}>
+          Select a date to change or view data :{' '}
+        </div>
+        <DatePicker
+          selected={selectedDate}
+          onChange={(nextDate) => setSelectedDate(nextDate)}
+        />
+      </div>
+
       <Row>
         {!hasTarget ? (
           <Col>
             <Button variant="primary" onClick={handleShow}>
-              Set Up target For Today <i className="far fa-clock"></i>
+              Set Up target For {moment(selectedDate).format('ddd/MMM/yyyy')}{' '}
+              <i className="far fa-clock"></i>
             </Button>
 
             <Modal show={show} onHide={handleClose}>
               <Modal.Header closeButton>
                 <Modal.Title>
-                  Set Up target For Today{' '}
+                  Set Up target For{' '}
+                  {moment(selectedDate).format('ddd/MMM/yyyy')}{' '}
                   <i className="fas fa-clipboard-check"></i>
                 </Modal.Title>
               </Modal.Header>
@@ -265,11 +268,13 @@ const Study = () => {
               <Col xs={12} sm={12} md={8}>
                 <h5>
                   <i className="fas fa-bullseye"></i> Target of{' '}
-                  {new Date().toDateString()} : <i className="far fa-clock"></i>
+                  {moment(selectedDate).format('ddd/MMM/yyyy')} :{' '}
+                  <i className="far fa-clock"></i>
                   &nbsp;{targetHour} Hours
                 </h5>{' '}
                 <Button variant="primary" onClick={handleShow}>
-                  Update Today's Target <i className="far fa-clock"></i>
+                  Update {moment(selectedDate).format('ddd/MMM/yyyy')} Target{' '}
+                  <i className="far fa-clock"></i>
                 </Button>
                 <Modal show={show} onHide={handleClose}>
                   <Modal.Header closeButton>
