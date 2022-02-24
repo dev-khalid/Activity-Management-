@@ -19,6 +19,10 @@ import * as Push from 'push.js';
 
 import '../../FirebaseConfiguration';
 
+import DatePicker from 'react-datepicker';
+
+import 'react-datepicker/dist/react-datepicker.css';
+
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -90,18 +94,17 @@ const Study = () => {
     };
     todaysData();
   }, [currentUser]);
-
-  useEffect(() => {
-    const totalStudiedHours = async () => {
-      const { data } = await axios.get(
-        `api/study/monthlyStudyHours/${
-          new Date().getMonth() + 1
-        }/${new Date().getFullYear()}/${currentUser.uid}`
-      );
-      setTotalStudiedHoursOfCM(data.hours); 
-    };
-    totalStudiedHours();
-  }, [completed]);
+  // useEffect(() => {
+  //   const totalStudiedHours = async () => {
+  //     const { data } = await axios.get(
+  //       `api/study/monthlyStudyHours/${
+  //         new Date().getMonth() + 1
+  //       }/${new Date().getFullYear()}/${currentUser.uid}`
+  //     );
+  //     setTotalStudiedHoursOfCM(data.hours);
+  //   };
+  //   totalStudiedHours();
+  // }, [completed]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -207,9 +210,7 @@ const Study = () => {
   return (
     <Container className="py-3">
       {totalStudiedHoursOfCM && (
-        <h5 
-          style={{ textAlign: 'center', marginBottom: '20px' }}
-        >
+        <h5 style={{ textAlign: 'center', marginBottom: '20px' }}>
           Total Studied Hours of {months[Number(new Date().getMonth())]} -{' '}
           {totalStudiedHoursOfCM} Hours
         </h5>
@@ -261,12 +262,12 @@ const Study = () => {
         ) : (
           <>
             <Row>
-              <Col>
-                <h3>
+              <Col xs={12} sm={12} md={8}>
+                <h5>
                   <i className="fas fa-bullseye"></i> Target of{' '}
                   {new Date().toDateString()} : <i className="far fa-clock"></i>
                   &nbsp;{targetHour} Hours
-                </h3>{' '}
+                </h5>{' '}
                 <Button variant="primary" onClick={handleShow}>
                   Update Today's Target <i className="far fa-clock"></i>
                 </Button>
@@ -312,7 +313,7 @@ const Study = () => {
                   </Form>
                 </Modal>
               </Col>
-              <Col className="col-md-4">
+              <Col xs={12} sm={12} md={4} className="col-md-4">
                 <Form onSubmit={currentStudiedHourHandler}>
                   <Form.Group className="mb-3" controlId="formBasicHour">
                     <Form.Label>Enter Hours</Form.Label>
@@ -338,14 +339,14 @@ const Study = () => {
       </Row>
 
       <Row className="py-3">
-        <Col className=" col-xl-5 col-md-5 col-sm-12">
-          <h3>
+        <Col md={6} xl={6} sm={12} xs={12}>
+          <h5>
             Today's Statistics:{' '}
             {!parseInt((completed / parseInt(targetHour)) * 100)
               ? '0'
               : parseInt((completed / parseInt(targetHour)) * 100)}
             % Completed
-          </h3>
+          </h5>
 
           <ToastContainer
             position="top-center"
@@ -358,9 +359,19 @@ const Study = () => {
             draggable
             pauseOnHover
           />
-          <Pie data={pieData} />
+          <div
+            style={{
+              height: '250px',
+              width: '250px',
+              paddingTop: '20px',
+              textAlign: 'center',
+              marginBottom: '30px',
+            }}
+          >
+            <Pie data={pieData} />
+          </div>
         </Col>
-        <Col className="col-xl-7 col-md-7 col-sm-12 py-3">
+        <Col md={6} xl={6} sm={12} xs={12}>
           <MonthlyData updateBarChart={updateBarChart} />
         </Col>
       </Row>
@@ -369,10 +380,6 @@ const Study = () => {
 };
 
 export default Study;
-//custom webpack setup
-//custom babel setup
-//custom eslint setup sikhte hobe .
-
 /**
    * 
    * @TODO 
