@@ -1,40 +1,41 @@
 import asyncHandler from 'express-async-handler';
 import Study from '../models/studyModel.js';
 import moment from 'moment';
-//Helper functions
-const monthsStartingAtMiliseconds = (date = new Date()) => {
-  return new Date(date.getFullYear(), date.getMonth(), 1).getTime();
-};
-function getNumberOfDaysInMonth(date = new Date()) {
-  return new Date(date.getFullYear(), date.getMonth(), 0).getDate();
-}
+// //Helper functions
+// const monthsStartingAtMiliseconds = (date = new Date()) => {
+//   return new Date(date.getFullYear(), date.getMonth(), 1).getTime();
+// };
+// function getNumberOfDaysInMonth(date = new Date()) {
+//   return new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+// }
 
 const todaysStartingAtMiliseconds = (date = new Date()) => {
   return new Date(date.toDateString()).getTime();
 };
 
+//this one is checked
 export const createTarget = asyncHandler(async (req, res) => {
-  const { userId, targetHour } = req.body;
-  const data = await Study.create({ userId, targetHour });
+  const { date, userId, targetHour } = req.body;
+  date = moment(date).startOf('day');
+  const data = await Study.create({ userId, targetHour, date });
   res.status(201).json(data);
 });
 
+//this one is checked
 export const updateTarget = asyncHandler(async (req, res) => {
-  const { userId, targetHour } = req.body;
+  const { userId, targetHour, date } = req.body;
   const data = await Study.findOneAndUpdate(
     {
       userId,
       $and: [
         {
-          createdAt: {
-            $gte: new Date(todaysStartingAtMiliseconds()).toISOString(),
+          date: {
+            $gte: moment(date).startOf('day'),
           },
         },
         {
-          createdAt: {
-            $lte: new Date(
-              todaysStartingAtMiliseconds() + 86400000
-            ).toISOString(),
+          date: {
+            $lte: moment(date).endOf('day'),
           },
         },
       ],
@@ -47,14 +48,16 @@ export const updateTarget = asyncHandler(async (req, res) => {
   );
   res.json(data);
 });
+
+//this one is checked
 export const updateCompleted = asyncHandler(async (req, res) => {
-  const { userId, completed } = req.body;
+  const { userId, completed, date } = req.body;
   const data = await Study.findOneAndUpdate(
     {
       userId,
       $and: [
-        { createdAt: { $gte: todaysStartingAtMiliseconds() } },
-        { createdAt: { $lte: todaysStartingAtMiliseconds() + 86400000 } },
+        { date: { $gte: moment(date).startOf('day') } },
+        { date: { $lte: moment(date).endOf('day') } },
       ],
     },
     { completed },
@@ -64,35 +67,50 @@ export const updateCompleted = asyncHandler(async (req, res) => {
   );
   res.json(data);
 });
+
+//
 export const getTodaysData = asyncHandler(async (req, res) => {
   const { userId } = req.params;
   const data = await Study.findOne({
     userId,
     $and: [
-      { createdAt: { $gte: todaysStartingAtMiliseconds() } },
-      { createdAt: { $lte: todaysStartingAtMiliseconds() + 86400000 } },
+      { date: { $gte: todaysStartingAtMiliseconds() } },
+      { date: { $lte: todaysStartingAtMiliseconds() + 86400000 } },
     ],
   });
   res.json(data);
 });
+export const getSelctedDaysData = asyncHandler(async (req, res) => {
+  const { userId, date } = req.params;
+  const data = await Study.findOne({
+    userId,
+    $and: [
+      { date: { $gte: moment(date).startOf('day') } },
+      { date: { $lte: moment(date).endOf('day') } },
+    ],
+  });
+  res.json(data);
+});
+
 export const getMonthlyData = asyncHandler(async (req, res) => {
-  let { userId } = req.params;
-  let date;
+  let { userId, date } = req.params;
   if (!date) date = new Date();
   const data = await Study.find({
     userId,
     $and: [
-      { createdAt: { $gte: monthsStartingAtMiliseconds(new Date()) } },
+      { date: { $gte: moment(date).startOf('month') } },
       {
-        createdAt: {
-          $lte:
-            monthsStartingAtMiliseconds(date) +
-            86400000 * getNumberOfDaysInMonth(date),
+        date: {
+          $lte: moment(date).endOf('month'),
         },
       },
     ],
   });
-  res.json(data);
+  let hours = 0;
+  data.forEach((obj) => {
+    hours += obj.completed;
+  });
+  res.json({ data, hours });
 });
 export const getMonthlyStudyHours = asyncHandler(async (req, res) => {
   let { userId } = req.params;
@@ -110,10 +128,17 @@ export const getMonthlyStudyHours = asyncHandler(async (req, res) => {
         },
       },
     ],
-  })
-  let hours = 0  
-  data.forEach((obj=>  {
-    hours += obj.completed; 
-  })) 
-  res.json({hours});
+  });
+  let hours = 0;
+  data.forEach((obj) => {
+    hours += obj.completed;
+  });
+  res.json({ hours });
 });
+
+//now i need to back-up the data first and then finally modify them and then seed them .
+
+/**@TODO
+ * 1.if no date is provided then i should keep an option to search by created at .
+ * 2.i need to update my database .
+ */

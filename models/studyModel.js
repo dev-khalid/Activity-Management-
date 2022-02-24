@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 /**
  * @TODO
- * 1.userId should be varified userId coming from user collection . 
- * 2.I should use jwt for authentication . 
+ * 1.userId should be varified userId coming from user collection .
+ * 2.I should use jwt for authentication .
  * 3.First let's focus on making front end dybamic then think about authentication
  */
 const studySchema = mongoose.Schema(
@@ -20,6 +20,7 @@ const studySchema = mongoose.Schema(
       default: 0,
       required: ['There Must Be an User Id'],
     },
+    date: Date,
   },
   { timestamps: true }
 );

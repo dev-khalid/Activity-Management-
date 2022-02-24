@@ -11,6 +11,11 @@ import targetRoute from './routes/targetRoute.js';
 import achievementRoute from './routes/achievementRoute.js';
 import studentRoute from './routes/studentRoute.js';
 import notificationRoute from './routes/notificationRoute.js'; 
+
+import Study from './models/studyModel.js'; 
+
+
+
 const __dirname = path.resolve();
 
 //DATABASE CONNECTION
@@ -26,6 +31,13 @@ const app = express();
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
+
+app.get('/preparing',async(req,res) => { 
+  const data = await Study.find(); 
+  data.forEach(obj => { 
+    
+  })
+})
 
 app.get('/api', (req, res, next) => {
   console.log('At least getting the request here.');
