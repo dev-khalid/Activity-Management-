@@ -32,23 +32,6 @@ ChartJS.register(
   Title
 );
 
-const months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
-
-let years = [2021, 2022];
-
 const Study = () => {
   //
 
@@ -63,9 +46,10 @@ const Study = () => {
   const handleClose = () => setShow(false); //this state is used for modal
   const handleShow = () => setShow(true); //used for modal
   useEffect(() => {
-    const todaysData = async () => {
+    const studyData = async () => {
+      const convertedDate = moment(selectedDate).format();
       const { data } = await axios.get(
-        `api/study/todaysdata/${currentUser.uid}`
+        `api/study//sutdyData/${currentUser.uid}/${convertedDate}`
       );
       if (data) {
         setHasTarget(true);
@@ -90,10 +74,12 @@ const Study = () => {
           progress: undefined,
         });
         setHasTarget(false);
+        setTargetHour(0);
+        setCompleted(0);
       }
     };
-    todaysData();
-  }, [currentUser]);
+    studyData();
+  }, [currentUser, selectedDate]);
 
   //this one is up to date
   const submitHandler = (e) => {
@@ -212,7 +198,10 @@ const Study = () => {
         </div>
         <DatePicker
           selected={selectedDate}
-          onChange={(nextDate) => setSelectedDate(nextDate)}
+          onChange={(nextDate) => {
+            console.log(nextDate);
+            setSelectedDate(nextDate);
+          }}
         />
       </div>
 
@@ -345,14 +334,6 @@ const Study = () => {
 
       <Row className="py-3">
         <Col md={6} xl={6} sm={12} xs={12}>
-          <h5>
-            Today's Statistics:{' '}
-            {!parseInt((completed / parseInt(targetHour)) * 100)
-              ? '0'
-              : parseInt((completed / parseInt(targetHour)) * 100)}
-            % Completed
-          </h5>
-
           <ToastContainer
             position="top-center"
             autoClose={10000}
@@ -364,20 +345,36 @@ const Study = () => {
             draggable
             pauseOnHover
           />
-          <div
-            style={{
-              height: '250px',
-              width: '250px',
-              paddingTop: '20px',
-              textAlign: 'center',
-              marginBottom: '30px',
-            }}
-          >
-            <Pie data={pieData} />
-          </div>
+          {hasTarget ? (
+            <>
+              <h5>
+                Studied Hours Statistics:{' '}
+                {!parseInt((completed / parseInt(targetHour)) * 100)
+                  ? '0'
+                  : parseInt((completed / parseInt(targetHour)) * 100)}
+                % Completed
+              </h5>
+
+              <div
+                style={{
+                  height: '250px',
+                  width: '250px',
+                  paddingTop: '20px',
+                  textAlign: 'center',
+                  marginBottom: '30px',
+                }}
+              >
+                <Pie data={pieData} />
+              </div>
+            </>
+          ) : (
+            <h6>
+              No Data Found ... 
+            </h6>
+          )}
         </Col>
         <Col md={6} xl={6} sm={12} xs={12}>
-          <MonthlyData updateBarChart={updateBarChart} />
+          <MonthlyData date={selectedDate} updateBarChart={updateBarChart} />
         </Col>
       </Row>
     </Container>

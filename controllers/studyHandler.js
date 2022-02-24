@@ -15,7 +15,7 @@ const todaysStartingAtMiliseconds = (date = new Date()) => {
 
 //this one is checked
 export const createTarget = asyncHandler(async (req, res) => {
-  const { date, userId, targetHour } = req.body;
+  let { date, userId, targetHour } = req.body;
   date = moment(date).startOf('day');
   const data = await Study.create({ userId, targetHour, date });
   res.status(201).json(data);

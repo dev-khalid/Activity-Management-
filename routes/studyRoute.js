@@ -16,8 +16,8 @@ router.post('/', createTarget);
 router.patch('/target', updateTarget);
 router.patch('/completed', updateCompleted);
 router.get('/todaysdata/:userId', getTodaysData);
-router.get('/sutdyData/:userId/:date',getSelctedDaysData); 
-router.get('/monthlydata/:userId', getMonthlyData);
+router.get('/sutdyData/:userId/:date', getSelctedDaysData);
+router.get('/monthlydata/:userId/:date', getMonthlyData);
 router.get('/monthlyStudyHours/:month/:year/:userId', getMonthlyStudyHours);
 
 export default router;

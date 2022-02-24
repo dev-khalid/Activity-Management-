@@ -10,11 +10,10 @@ import path from 'path';
 import targetRoute from './routes/targetRoute.js';
 import achievementRoute from './routes/achievementRoute.js';
 import studentRoute from './routes/studentRoute.js';
-import notificationRoute from './routes/notificationRoute.js'; 
+import notificationRoute from './routes/notificationRoute.js';
 
-import Study from './models/studyModel.js'; 
-
-
+import Study from './models/studyModel.js';
+// import backupData from './backupData.js';
 
 const __dirname = path.resolve();
 
@@ -32,12 +31,20 @@ app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 
-app.get('/preparing',async(req,res) => { 
-  const data = await Study.find(); 
-  data.forEach(obj => { 
-    
-  })
-})
+//backup done
+// app.get('/preparing', async (req, res) => {
+//   const newData = backupData.map((d) => {
+//     d.date = d.createdAt;
+//     delete d.__v;
+//     delete d._id;
+//     delete d.createdAt;
+//     delete d.updatedAt;
+//     return d;
+//   });
+//   const data = await Study.insertMany(newData);
+
+//   res.json(data);
+// });
 
 app.get('/api', (req, res, next) => {
   console.log('At least getting the request here.');

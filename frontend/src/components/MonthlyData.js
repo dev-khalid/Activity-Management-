@@ -15,6 +15,7 @@ import getMonthName from '../helpers/getMonthName';
 import getNumberOfDaysInMonth from '../helpers/getNumberOfDaysInMonth';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import moment from 'moment';
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -24,7 +25,8 @@ ChartJS.register(
   BarElement,
   Title
 );
-const MonthlyData = ({ updateBarChart }) => {
+const MonthlyData = ({ updateBarChart, date }) => {
+  const convertedDate = moment(date).format();
   const [totalHours, setTotalHours] = useState('');
   const [loading, setLoading] = useState(false);
   const { currentUser } = useAuth();
@@ -34,13 +36,13 @@ const MonthlyData = ({ updateBarChart }) => {
     const getMonthlyData = async () => {
       setLoading(true);
       const { data } = await axios.get(
-        `/api/study/monthlydata/${currentUser.uid}`
+        `/api/study/monthlydata/${currentUser.uid}/${convertedDate}`
       );
       let monthlyDataCopy = [];
       console.log(data);
       let h = 0;
       data.data.forEach((d) => {
-        const date = new Date(d.createdAt).getDate();
+        const date = new Date(d.date).getDate();
         monthlyDataCopy[date - 1] = d.completed;
       });
       setMonthlyData(monthlyDataCopy);
@@ -48,7 +50,7 @@ const MonthlyData = ({ updateBarChart }) => {
       setLoading(false);
     };
     getMonthlyData();
-  }, [currentUser, updateBarChart]);
+  }, [currentUser, updateBarChart, date]);
   const options = {
     responsive: true,
     plugins: {
@@ -58,7 +60,11 @@ const MonthlyData = ({ updateBarChart }) => {
       title: {
         display: true,
         text:
-          'Statistics of ' + getMonthName() + ' ' + totalHours + ' Hours total',
+          'Statistics of ' +
+          moment(date).format('MMMM') +
+          ' ' +
+          totalHours +
+          ' Hours total',
       },
     },
   };
