@@ -28,8 +28,25 @@ ChartJS.register(
   Title
 );
 
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+let years = [2021, 2022];
+
 const Study = () => {
-  // 
+  //
 
   const [show, setShow] = useState(false); //this state is used for modal show
   const [targetHour, setTargetHour] = useState(0);
@@ -37,6 +54,7 @@ const Study = () => {
   const [completed, setCompleted] = useState(0);
   const [currentStudiedHours, setCurrentStudiedHours] = useState(0);
   const [updateBarChart, setUpdateBarchart] = useState(0);
+  const [totalStudiedHoursOfCM, setTotalStudiedHoursOfCM] = useState(undefined);
   const { currentUser } = useAuth();
   const handleClose = () => setShow(false); //this state is used for modal
   const handleShow = () => setShow(true); //used for modal
@@ -73,6 +91,18 @@ const Study = () => {
     todaysData();
   }, [currentUser]);
 
+  useEffect(() => {
+    const totalStudiedHours = async () => {
+      const { data } = await axios.get(
+        `api/study/monthlyStudyHours/${
+          new Date().getMonth() + 1
+        }/${new Date().getFullYear()}/${currentUser.uid}`
+      );
+      setTotalStudiedHoursOfCM(data.hours); 
+    };
+    totalStudiedHours();
+  }, [completed]);
+
   const submitHandler = (e) => {
     e.preventDefault();
     if (targetHour > 0 && targetHour < 24) {
@@ -81,7 +111,7 @@ const Study = () => {
           userId: currentUser.uid,
           targetHour,
         });
-        toast.info(targetHour+' Hour Addedd!', {
+        toast.info(targetHour + ' Hour Addedd!', {
           position: 'top-center',
           icon: '🚀',
           autoClose: 5000,
@@ -94,7 +124,6 @@ const Study = () => {
         setHasTarget(true);
         setTargetHour(data.targetHour);
         setCompleted(data.completed);
-
       };
       submitTarget();
     } else {
@@ -110,16 +139,16 @@ const Study = () => {
           userId: currentUser.uid,
           targetHour,
         });
-         toast( targetHour + ' Hour Updated!', {
-           position: 'top-center',
-           autoClose: 5000,
-           icon: '🚀',
-           hideProgressBar: false,
-           closeOnClick: true,
-           pauseOnHover: true,
-           draggable: true,
-           progress: undefined,
-         });
+        toast(targetHour + ' Hour Updated!', {
+          position: 'top-center',
+          autoClose: 5000,
+          icon: '🚀',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         setHasTarget(true);
         setTargetHour(data.targetHour);
       };
@@ -144,16 +173,16 @@ const Study = () => {
           userId: currentUser.uid,
           completed: parseInt(completed) + parseInt(currentStudiedHours),
         });
-         toast(currentStudiedHours + ' Hour Added!', {
-           position: 'top-center',
-           icon: '🚀',
-           autoClose: 5000,
-           hideProgressBar: false,
-           closeOnClick: true,
-           pauseOnHover: true,
-           draggable: true,
-           progress: undefined,
-         });
+        toast(currentStudiedHours + ' Hour Added!', {
+          position: 'top-center',
+          icon: '🚀',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         setCompleted(data.completed);
         setCurrentStudiedHours(0);
         setUpdateBarchart(updateBarChart + 1);
@@ -177,6 +206,14 @@ const Study = () => {
 
   return (
     <Container className="py-3">
+      {totalStudiedHoursOfCM && (
+        <h5 
+          style={{ textAlign: 'center', marginBottom: '20px' }}
+        >
+          Total Studied Hours of {months[Number(new Date().getMonth())]} -{' '}
+          {totalStudiedHoursOfCM} Hours
+        </h5>
+      )}
       <Row>
         {!hasTarget ? (
           <Col>

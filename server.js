@@ -10,7 +10,7 @@ import path from 'path';
 import targetRoute from './routes/targetRoute.js';
 import achievementRoute from './routes/achievementRoute.js';
 import studentRoute from './routes/studentRoute.js';
-import notificationRoute from './routes/notificationRoute.js';
+import notificationRoute from './routes/notificationRoute.js'; 
 const __dirname = path.resolve();
 
 //DATABASE CONNECTION

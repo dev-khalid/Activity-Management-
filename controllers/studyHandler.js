@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Study from '../models/studyModel.js';
-
+import moment from 'moment';
 //Helper functions
 const monthsStartingAtMiliseconds = (date = new Date()) => {
   return new Date(date.getFullYear(), date.getMonth(), 1).getTime();
@@ -93,4 +93,27 @@ export const getMonthlyData = asyncHandler(async (req, res) => {
     ],
   });
   res.json(data);
+});
+export const getMonthlyStudyHours = asyncHandler(async (req, res) => {
+  let { userId } = req.params;
+  let date = `${req.params.year || new Date().getFullYear()}-${
+    req.params.month || new Date().getMonth() + 1
+  }-01`;
+
+  const data = await Study.find({
+    userId,
+    $and: [
+      { createdAt: { $gte: new Date(date).toISOString() } },
+      {
+        createdAt: {
+          $lte: moment(date).endOf('month'),
+        },
+      },
+    ],
+  })
+  let hours = 0  
+  data.forEach((obj=>  {
+    hours += obj.completed; 
+  })) 
+  res.json({hours});
 });
