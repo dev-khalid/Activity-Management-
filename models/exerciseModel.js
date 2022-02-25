@@ -7,6 +7,9 @@ const ExerciseSchema = mongoose.Schema({
     type: String,
   },
   userId: { type: String, required: true },
+  timeOfExercise: {
+    type: Number,
+  },
 });
 
 const Exercise = mongoose.model('Exercise', ExerciseSchema);

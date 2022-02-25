@@ -50,6 +50,9 @@ const NavBar = () => {
               <Nav.Link as={NavLink} to="/study">
                 Study
               </Nav.Link>
+              <Nav.Link as={NavLink} to="/exercise">
+                Exercise
+              </Nav.Link>
               <Nav.Link as={NavLink} to="/target">
                 Target
               </Nav.Link>

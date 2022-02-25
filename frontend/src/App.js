@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'; 
-import './App.css'
+import React, { useEffect } from 'react';
+import './App.css';
 import Login from './components/pages/Login';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Study from './components/pages/Study';
@@ -10,6 +10,7 @@ import Target from './components/pages/Target';
 import Achievement from './components/pages/Achievement';
 import Students from './components/pages/Students';
 import Details from './components/pages/Details';
+import Exercise from './components/pages/Exercise';
 // import swDev from './swDev';
 import axios from 'axios';
 function App() {
@@ -35,6 +36,14 @@ function App() {
             element={
               <PrivateRoute>
                 <Study />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/exercise"
+            element={
+              <PrivateRoute>
+                <Exercise />
               </PrivateRoute>
             }
           />
