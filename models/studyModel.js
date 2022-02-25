@@ -5,25 +5,22 @@ import mongoose from 'mongoose';
  * 2.I should use jwt for authentication .
  * 3.First let's focus on making front end dybamic then think about authentication
  */
-const studySchema = mongoose.Schema(
-  {
-    userId: {
-      type: 'string',
-      required: ['There Must Be an User Id'],
-    },
-    targetHour: {
-      type: 'number',
-      required: ['Target Hour is Required'],
-    },
-    completed: {
-      type: 'number',
-      default: 0,
-      required: ['There Must Be an User Id'],
-    },
-    date: Date,
+const studySchema = mongoose.Schema({
+  userId: {
+    type: 'string',
+    required: ['There Must Be an User Id'],
   },
-  { timestamps: true }
-);
+  targetHour: {
+    type: 'number',
+    required: ['Target Hour is Required'],
+  },
+  completed: {
+    type: 'number',
+    default: 0,
+    required: ['There Must Be an User Id'],
+  },
+  date: Date,
+});
 
 const Study = mongoose.model('Study', studySchema);
 export default Study;

@@ -11,8 +11,9 @@ import targetRoute from './routes/targetRoute.js';
 import achievementRoute from './routes/achievementRoute.js';
 import studentRoute from './routes/studentRoute.js';
 import notificationRoute from './routes/notificationRoute.js';
+import exerciseRoute from './routes/exerciseRoute.js';
 
-import Study from './models/studyModel.js';
+// import Study from './models/studyModel.js';
 // import backupData from './backupData.js';
 
 const __dirname = path.resolve();
@@ -56,6 +57,7 @@ app.use('/api/target', targetRoute);
 app.use('/api/achievement', achievementRoute);
 app.use('/api/student', studentRoute);
 app.use('/api/notification', notificationRoute);
+app.use('/api/exercise', exerciseRoute);
 
 //pushnig notification
 
