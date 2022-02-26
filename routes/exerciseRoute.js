@@ -6,7 +6,7 @@ import {
 } from '../controllers/exerciseHandler.js';
 
 const router = Router();
-router.route('/').post( createExercise).patch(updateData);
-router.get('/:userId/:date') 
+router.route('/').post(createExercise).patch(updateData);
+router.get('/:userId/:date', getMonthlyData);
 
 export default router;
