@@ -195,7 +195,7 @@ const Target = () => {
                       className="overflow-auto"
                       style={{ maxHeight: '450px', paddingLeft: '5px' }}
                     >
-                      <TaskDetails tasks={target?.tasks} />
+                      <TaskDetails target={target} />
                     </div>
                     <div style={{ textAlign: 'center', marginTop: '10px' }}>
                       <Button

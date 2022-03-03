@@ -27,9 +27,8 @@ export const createTask = asyncHandler(async (req, res) => {
     _id: targetId,
     userId,
   });
-  if (deadline > target.deadline) {
-    const finalDeadline = deadline;
-    target.deadline = finalDeadline;
+  if (deadline > moment(target.deadline).format()) {
+    target.deadline = deadline;
   }
   //now need to push into target.tasks
   target.tasks.push({
@@ -71,6 +70,10 @@ export const removeTask = asyncHandler(async (req, res) => {
   res.json(target);
 });
 
+/**
+ * @ROUTE - patch /api/target/
+ * @Request - body - { title, deadline , accomlished}
+ */
 export const updateTarget = asyncHandler(async (req, res, next) => {
   const { _id } = req.body;
   let updateObject = {};
@@ -112,3 +115,7 @@ export const getAllTargets = asyncHandler(async (req, res) => {
   }).countDocuments();
   res.json(data);
 });
+
+//when every task will be completed then the target will be markd as completed .. 100% and i dont't want to add something on that again . right ?
+
+//

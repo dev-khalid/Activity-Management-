@@ -1,159 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Form } from 'react-bootstrap';
-
+import { Button, Form, Spinner } from 'react-bootstrap';
+import axios from 'axios';
 import DatePicker from 'react-datepicker';
-
+import { useAuth } from '../contexts/AuthContext';
 import 'react-datepicker/dist/react-datepicker.css';
+import moment from 'moment';
 
-const TaskDetails = ({ tasks }) => {
+const TaskDetails = ({ target }) => {
+  const { currentUser } = useAuth();
+  const [loading, setLoading] = useState(false);
   const [display, setDisplay] = useState('none');
-  const [newTask, setNewTask] = useState('');
+  const [newTask, setNewTask] = useState(''); //here i will
   const [selectedDate, setSelectedDate] = useState(new Date());
-  //i think there should be a start that should manage all thease things . right ?
-  //all onchanges and all values .
-  const [checkVal, setCheckVal] = useState([]);//all tasks inside a target . 
-
-  tasks = [
-    {
-      task: 'Complete this website',
-      deadline: '2022-03-20',
-      done: true,
-      _id: Math.random(),
-    },
-    {
-      task: 'Check student management website and update thats functionality also this text can be much more larger right ?  ok start on working this text',
-      deadline: '2022-03-20',
-      done: false,
-      _id: Math.random(),
-    },
-    {
-      task: 'Start building logic.',
-      deadline: '2022-03-20',
-      done: true,
-      _id: Math.random(),
-    },
-    {
-      task: 'Complete this website',
-      deadline: '2022-03-20',
-      done: true,
-      _id: Math.random(),
-    },
-    {
-      task: 'Check student management website and update thats functionality also ',
-      deadline: '2022-03-20',
-      done: false,
-      _id: Math.random(),
-    },
-    {
-      task: 'Start building logic.',
-      deadline: '2022-03-20',
-      done: true,
-      _id: Math.random(),
-    },
-    {
-      task: 'Complete this website',
-      deadline: '2022-03-20',
-      done: true,
-      _id: Math.random(),
-    },
-    {
-      task: 'Check student management website and update thats functionality also ',
-      deadline: '2022-03-20',
-      done: false,
-      _id: Math.random(),
-    },
-    {
-      task: 'Start building logic.',
-      deadline: '2022-03-20',
-      done: true,
-      _id: Math.random(),
-    },
-    {
-      task: 'Complete this website',
-      deadline: '2022-03-20',
-      done: true,
-      _id: Math.random(),
-    },
-    {
-      task: 'Check student management website and update thats functionality also ',
-      deadline: '2022-03-20',
-      done: false,
-      _id: Math.random(),
-    },
-    {
-      task: 'Start building logic.',
-      deadline: '2022-03-20',
-      done: true,
-      _id: Math.random(),
-    },
-    {
-      task: 'Complete this website',
-      deadline: '2022-03-20',
-      done: true,
-      _id: Math.random(),
-    },
-    {
-      task: 'Check student management website and update thats functionality also ',
-      deadline: '2022-03-20',
-      done: false,
-      _id: Math.random(),
-    },
-    {
-      task: 'Start building logic.',
-      deadline: '2022-03-20',
-      done: true,
-      _id: Math.random(),
-    },
-    {
-      task: 'Complete this website',
-      deadline: '2022-03-20',
-      done: true,
-      _id: Math.random(),
-    },
-    {
-      task: 'Check student management website and update thats functionality also ',
-      deadline: '2022-03-20',
-      done: false,
-      _id: Math.random(),
-    },
-    {
-      task: 'Start building logic.',
-      deadline: '2022-03-20',
-      done: true,
-      _id: Math.random(),
-    },
-  ];
-  //this will be removed soon . 
+  const [checkVal, setCheckVal] = useState([]); //all tasks inside a target .
   useEffect(() => {
-
-    let formatCheckVal = [];
-
-    tasks.forEach((task) =>
-      formatCheckVal.push({
-        _id: task?._id,
-        checked: task.done,
-      })
-    );
-    setCheckVal(formatCheckVal);
+    if (target?.tasks?.length > 0) setCheckVal(target.tasks);
   }, []);
-
-  const markTaskHandler = (id, checked, newCheckVal) => {
+  const markTaskHandler = (id, done, newCheckVal) => {
+    //here update will go ...
     console.log(id);
-    newCheckVal[id].checked = checked;
+    newCheckVal[id].done = done;
     setCheckVal(newCheckVal);
   };
 
+  const updateTask = () => {};
+  const deleteTask = () => {};
   const addNewTask = () => {
-    let formatCheckVal = [];
-
-    tasks.forEach((task) =>
-      formatCheckVal.push({
-        _id: task?._id,
-        checked: task.done,
-      })
-    );
-    console.log('eita add new task er moddho theke render niche');
-    setCheckVal(formatCheckVal);
+    const addTask = async () => {
+      setLoading(true);
+      /**
+       * BACKEND
+       * @ROUTE - patch - /api/target/createtask
+       * @Request - body - {task,deadline,targetId,userId}
+       */
+      const { data } = await axios.patch('/api/target/createtask', {
+        task: newTask,
+        targetId: target?._id,
+        deadline: selectedDate,
+        userId: currentUser?.uid,
+      });
+      console.log(data.tasks);
+      setLoading(false);
+      setCheckVal(data?.tasks || []);
+      setDisplay('none');
+    };
+    addTask();
   };
 
   return (
@@ -164,12 +55,12 @@ const TaskDetails = ({ tasks }) => {
     >
       <div style={{ margin: '10px 0' }}>
         <div style={{ display, margin: '15px 0' }}>
-          <Form.Label htmlFor="inputPassword5">Set task</Form.Label>
+          <Form.Label htmlFor="task">Set task</Form.Label>
           <Form.Control
             value={newTask}
             onChange={(e) => setNewTask(e.target.value)}
             type="text"
-            id="inputPassword5"
+            id="task"
             placeholder="Enter task information here..."
           />
           <div style={{ margin: '10px 0' }}>Please set a deadline: </div>
@@ -182,6 +73,7 @@ const TaskDetails = ({ tasks }) => {
             }}
           />
           <Button
+            disabled={loading}
             style={{
               fontSize: '14px',
               padding: '5px 7px',
@@ -189,7 +81,14 @@ const TaskDetails = ({ tasks }) => {
             }}
             onClick={addNewTask}
           >
-            Submit
+            {!loading ? (
+              'Submit'
+            ) : (
+              <>
+                <Spinner animation="border" size="sm" />
+                &nbsp;Loading...
+              </>
+            )}
           </Button>
         </div>
         <Button
@@ -206,23 +105,37 @@ const TaskDetails = ({ tasks }) => {
           Add New Task
         </Button>
       </div>
-      let's start working here.
       <Form>
-        {tasks &&
-          checkVal.length > 0 &&
-          tasks.map((task, id) => {
+        {checkVal.length > 0 &&
+          checkVal.map((task, id) => {
             return (
-              <div className="d-flex justify-content-between border p-2">
+              <div
+                key={task?._id}
+                className="d-flex justify-content-between border p-2"
+              >
                 <div>
                   <Form.Check
                     type="checkbox"
                     id={task?._id}
                     label={task?.task}
-                    defaultChecked={checkVal[id]?.checked}
+                    defaultChecked={checkVal[id]?.done}
                     onChange={(e) =>
                       markTaskHandler(id, e.target.checked, checkVal)
                     }
                   />
+                  <span>
+                    Deadline:{' '}
+                    <strong
+                      className={
+                        moment(task?.deadline).endOf('day') >=
+                        moment().endOf('day')
+                          ? 'text-success'
+                          : 'text-danger'
+                      }
+                    >
+                      {moment(task.deadline).format('ddd DD-MM-yyyy')}
+                    </strong>
+                  </span>
                 </div>
                 <div style={{ width: '50px' }}>
                   <Button

@@ -1,8 +1,6 @@
 import '../FirebaseConfiguration';
 import React, { useEffect, useState, useContext } from 'react';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
-// import jwt from 'jsonwebtoken';
-// import { useCookies } from 'react-cookie';
 const AuthContext = React.createContext();
 
 export function AuthProvider({ children }) {
@@ -17,12 +15,6 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const auth = getAuth();
     const unregisterAuthObserver = onAuthStateChanged(auth, (user) => { 
-      // setCookie({
-      //   name: 'access_token',
-      //   value: jwt.sign({ userId: user.uid }, process.env.JWT_SECRET, {
-      //     exp: process.env.JWT_EXPIRES_IN,
-      //   }),
-      // });
       setCurrentUser(user);
       setLoading(false);
     });

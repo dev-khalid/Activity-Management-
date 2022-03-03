@@ -11,7 +11,10 @@ const targetSchema = mongoose.Schema(
       {
         task: String,
         deadline: Date,
-        done: Boolean,
+        done: {
+          type: Boolean,
+          default: false,
+        },
       },
     ],
     deadline: {
