@@ -5,6 +5,9 @@ import {
   createTarget,
   getTarget,
   getAllTargets,
+  createTask,
+  updateTask,
+  removeTask,
 } from '../controllers/targetHandler.js';
 const router = express.Router();
 
@@ -15,4 +18,8 @@ router.route('/').post(createTarget).patch(updateTarget);
 router.get('/count/:userId', getAllTargets);
 router.route('/:page/:userId').get(getTarget);
 router.delete('/:id', deleteTarget);
+router.delete('/task/remove', removeTask);
+router.patch('/createtask', createTask);
+router.patch('/updatetask', updateTask);
+
 export default router;

@@ -14,7 +14,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../../contexts/AuthContext';
 import PaginationComponent from '../PaginationComponent';
-import TaskDetails from '../TaskDetails'; 
+import TaskDetails from '../TaskDetails';
 
 const Target = () => {
   const [show, setShow] = useState(false);
@@ -172,12 +172,12 @@ const Target = () => {
         <Container>
           <Row className="py-3">
             {targets.map((target, id) => (
-              <Col key={id} className="py-3" xs={6} md={4} lg={3} xl={3}>
-                <Card>
+              <Col key={id} className="py-3" xs={12} md={6} lg={6} xl={4}>
+                <Card className="hover-effect ">
                   <Card.Body>
                     <Card.Title>{target.title}</Card.Title>
                     <Card.Text>
-                      Deadline: 
+                      Deadline:
                       <strong
                         className={
                           new Date().toISOString() > target.deadline
@@ -191,29 +191,43 @@ const Target = () => {
                         {new Date(target.deadline).toDateString()}
                       </strong>
                     </Card.Text>
-                    <TaskDetails tasks={target?.tasks}/>
-                    <Button
-                      variant="primary"
-                      onClick={() => completeHandler(target)}
+                    <div
+                      className="overflow-auto"
+                      style={{ maxHeight: '450px', paddingLeft: '5px' }}
                     >
-                      <i className="fas fa-check"></i>
-                    </Button>
-                    <Button
-                      variant="primary"
-                      onClick={() => updateHandler(target)}
-                      style={{
-                        marginLeft: '15px',
-                        marginRight: '15px',
-                      }}
-                    >
-                      <i className="fas fa-pen"></i>
-                    </Button>
-                    <Button
-                      variant="danger"
-                      onClick={() => deleteHandler(target)}
-                    >
-                      <i className="fas fa-trash-alt"></i>
-                    </Button>
+                      <TaskDetails tasks={target?.tasks} />
+                    </div>
+                    <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                      <Button
+                        style={{ fontSize: '14px', padding: '5px 7px' }}
+                        variant="primary"
+                        onClick={() => completeHandler(target)}
+                      >
+                        <i className="fas fa-check"></i>
+                      </Button>
+                      <Button
+                        variant="primary"
+                        onClick={() => updateHandler(target)}
+                        style={{
+                          marginLeft: '15px',
+                          marginRight: '15px',
+                          fontSize: '14px',
+                          padding: '5px 7px',
+                        }}
+                      >
+                        <i className="fas fa-pen"></i>
+                      </Button>
+                      <Button
+                        style={{
+                          fontSize: '14px',
+                          padding: '5px 7px',
+                        }}
+                        variant="danger"
+                        onClick={() => deleteHandler(target)}
+                      >
+                        <i className="fas fa-trash-alt"></i>
+                      </Button>
+                    </div>
                   </Card.Body>
                 </Card>{' '}
               </Col>
@@ -234,4 +248,3 @@ const Target = () => {
 };
 
 export default Target;
- 
