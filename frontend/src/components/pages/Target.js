@@ -14,6 +14,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../../contexts/AuthContext';
 import PaginationComponent from '../PaginationComponent';
+import TaskDetails from '../TaskDetails'; 
 
 const Target = () => {
   const [show, setShow] = useState(false);
@@ -176,7 +177,7 @@ const Target = () => {
                   <Card.Body>
                     <Card.Title>{target.title}</Card.Title>
                     <Card.Text>
-                      Deadline: {console.log(target.deadline)}
+                      Deadline: 
                       <strong
                         className={
                           new Date().toISOString() > target.deadline
@@ -190,6 +191,7 @@ const Target = () => {
                         {new Date(target.deadline).toDateString()}
                       </strong>
                     </Card.Text>
+                    <TaskDetails tasks={target?.tasks}/>
                     <Button
                       variant="primary"
                       onClick={() => completeHandler(target)}
@@ -232,3 +234,4 @@ const Target = () => {
 };
 
 export default Target;
+ 

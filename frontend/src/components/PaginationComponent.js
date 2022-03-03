@@ -13,9 +13,7 @@ const PaginationComponent = ({ activePage, setPage, userId, fetchFrom }) => {
         setAvailablePages(
           Math.ceil((data * 1) / process.env.REACT_APP_DOCUMENTS_PER_PAGE)
         );
-      console.log(
-        Math.ceil((data * 1) / process.env.REACT_APP_DOCUMENTS_PER_PAGE)
-      );
+       
     };
     allTArgets();
   }, []);
