@@ -41,7 +41,7 @@ export const createTask = asyncHandler(async (req, res) => {
 
 /**
  * @ROUTE - patch - /api/target/updateTask
- * @Request - body {taskId,targetId,done,task,deadline}
+ * @Request - body {taskId,targetId,done,taskName,deadline}
  */
 export const updateTask = asyncHandler(async (req, res) => {
   const { taskId, targetId, deadline, taskName, done } = req.body;

@@ -9,22 +9,65 @@ import moment from 'moment';
 const TaskDetails = ({ target }) => {
   const { currentUser } = useAuth();
   const [loading, setLoading] = useState(false);
+
+  /**All States needed for update */
+  const [updatingTask, setUpdatingTask] = useState(false); //I will use this one to render ui component for update
+  const [prevTask, setPrevTask] = useState();
+  const [prevDeadline, setPrevDeadline] = useState(new Date());
+  const [currentTaskId, setCurrentTaskId] = useState();
+
+  /**All states needed for new task  */
   const [display, setDisplay] = useState('none');
   const [newTask, setNewTask] = useState(''); //here i will
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  /**All the tasks */
   const [checkVal, setCheckVal] = useState([]); //all tasks inside a target .
+
   useEffect(() => {
     if (target?.tasks?.length > 0) setCheckVal(target.tasks);
   }, []);
-  const markTaskHandler = (id, done, newCheckVal) => {
-    //here update will go ...
-    console.log(id);
-    newCheckVal[id].done = done;
-    setCheckVal(newCheckVal);
+
+  const udpateTaskHandler = ({ taskId, done, deadline, taskName }) => {
+    /**
+     * @ROUTE - patch - /api/target/updatetask
+     * @Request - body {taskId,targetId,done,task,deadline}
+     */
+    const updateIt = async () => {
+      setLoading(true);
+      const { data } = await axios.patch('/api/target/updatetask', {
+        userId: currentUser.uid,
+        targetId: target?._id,
+        done,
+        taskId,
+        deadline,
+        taskName,
+      });
+      setCheckVal(data?.tasks || []);
+      setLoading(false);
+      setUpdatingTask(false);
+    };
+    updateIt();
   };
 
-  const updateTask = () => {};
-  const deleteTask = () => {};
+  const deleteTask = ({ taskId }) => {
+    /**
+     * @ROUTE - patch - /api/target/removetask
+     * @Request - body {taskId,targetId}
+     */
+    if (window.confirm('Click Ok to delete')) {
+      const deleteIt = async () => {
+        setLoading(true);
+        const { data } = await axios.patch('/api/target/task/remove', {
+          taskId,
+          targetId: target?._id,
+        });
+        setLoading(false);
+        setCheckVal(data?.tasks);
+      };
+      deleteIt();
+    }
+  };
   const addNewTask = () => {
     const addTask = async () => {
       setLoading(true);
@@ -39,7 +82,6 @@ const TaskDetails = ({ target }) => {
         deadline: selectedDate,
         userId: currentUser?.uid,
       });
-      console.log(data.tasks);
       setLoading(false);
       setCheckVal(data?.tasks || []);
       setDisplay('none');
@@ -68,7 +110,6 @@ const TaskDetails = ({ target }) => {
           <DatePicker
             selected={selectedDate}
             onChange={(nextDate) => {
-              console.log(nextDate);
               setSelectedDate(nextDate);
             }}
           />
@@ -105,6 +146,51 @@ const TaskDetails = ({ target }) => {
           Add New Task
         </Button>
       </div>
+      {updatingTask && (
+        <div style={{ margin: '10px 0' }}>
+          <div style={{ margin: '15px 0' }}>
+            <Form.Label htmlFor="taskUpdate">Update task</Form.Label>
+            <Form.Control
+              value={prevTask}
+              onChange={(e) => setPrevTask(e.target.value)}
+              type="text"
+              id="taskUpdate"
+            />
+            <div style={{ margin: '10px 0' }}>Update deadline: </div>
+            {/* by default this deadline should be set to components current deadline */}
+            <DatePicker
+              selected={prevDeadline}
+              onChange={(nextDate) => {
+                setPrevDeadline(nextDate);
+              }}
+            />
+            <Button
+              disabled={loading}
+              style={{
+                fontSize: '14px',
+                padding: '5px 7px',
+                marginTop: '10px',
+              }}
+              onClick={() =>
+                udpateTaskHandler({
+                  taskName: prevTask,
+                  deadline: prevDeadline,
+                  taskId: currentTaskId,
+                })
+              }
+            >
+              {!loading ? (
+                'Update'
+              ) : (
+                <>
+                  <Spinner animation="border" size="sm" />
+                  &nbsp;Loading...
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      )}
       <Form>
         {checkVal.length > 0 &&
           checkVal.map((task, id) => {
@@ -118,9 +204,12 @@ const TaskDetails = ({ target }) => {
                     type="checkbox"
                     id={task?._id}
                     label={task?.task}
-                    defaultChecked={checkVal[id]?.done}
+                    defaultChecked={task?.done}
                     onChange={(e) =>
-                      markTaskHandler(id, e.target.checked, checkVal)
+                      udpateTaskHandler({
+                        taskId: task?._id,
+                        done: e.target.checked,
+                      })
                     }
                   />
                   <span>
@@ -145,6 +234,13 @@ const TaskDetails = ({ target }) => {
                       padding: '3px',
                       margin: '0 2px',
                     }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setUpdatingTask(true);
+                      setCurrentTaskId(task?._id);
+                      setPrevDeadline(new Date(task?.deadline));
+                      setPrevTask(task?.task); //taskName
+                    }}
                   >
                     <i className="fas fa-pen"></i>
                   </Button>
@@ -155,8 +251,17 @@ const TaskDetails = ({ target }) => {
                       padding: '3px',
                       margin: '0 2px',
                     }}
+                    disabled={loading}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      deleteTask({ taskId: task?._id });
+                    }}
                   >
-                    <i className="fas fa-trash"></i>
+                    {loading ? ( 
+                        <Spinner animation="border" size="sm" />  
+                    ) : (
+                      <i className="fas fa-trash"></i>
+                    )}
                   </Button>
                 </div>
               </div>

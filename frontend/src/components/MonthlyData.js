@@ -38,8 +38,7 @@ const MonthlyData = ({ updateBarChart, date }) => {
       const { data } = await axios.get(
         `/api/study/monthlydata/${currentUser.uid}/${convertedDate}`
       );
-      let monthlyDataCopy = [];
-      console.log(data);
+      let monthlyDataCopy = []; 
       let h = 0;
       data.data.forEach((d) => {
         const date = new Date(d.date).getDate();

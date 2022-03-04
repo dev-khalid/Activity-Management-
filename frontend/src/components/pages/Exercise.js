@@ -67,18 +67,18 @@ const Exercise = () => {
   const [loading, setLoading] = useState(false);
 
   const { currentUser } = useAuth();
+  const monthlyData = async (date) => {
+    setLoading(true);
+    date = date || new Date().toISOString();
 
+    const { data } = await axios.get(
+      `/api/exercise/${currentUser.uid}/${moment(date).utcOffset(6).format()}`
+    ); 
+    setExerciseData(data);
+    setLoading(false);
+  };
+ 
   useEffect(() => {
-    const monthlyData = async () => {
-      setLoading(true);
-      const date = new Date().toISOString();
-
-      const { data } = await axios.get(
-        `/api/exercise/${currentUser.uid}/${date}`
-      );
-      setExerciseData(data);
-      setLoading(false);
-    };
     monthlyData();
   }, []);
 
@@ -115,6 +115,10 @@ const Exercise = () => {
     };
     createExercise();
   }
+
+  const onActiveStartDateChange = ({ activeStartDate }) => {
+    monthlyData(activeStartDate);
+  };
   return (
     <div>
       {loading && (
@@ -126,7 +130,6 @@ const Exercise = () => {
         <Modal.Header closeButton>
           <Modal.Title>
             Exercise : {moment(value).format('D dddd MMM yyyy')}{' '}
-            {console.log('submit er por loading er value ki', loading)}
             {loading && <Spinner animation="border" />}
           </Modal.Title>
         </Modal.Header>
@@ -165,8 +168,8 @@ const Exercise = () => {
 
       <Calendar
         value={value}
-        onChange={(nextVal) => {
-          console.log(nextVal);
+        onActiveStartDateChange={onActiveStartDateChange}
+        onChange={(nextVal) => { 
           return setValue(nextVal);
         }}
         tileClassName={tileClassName}
