@@ -12,11 +12,10 @@ import moment from 'moment';
 const todaysStartingAtMiliseconds = (date = new Date()) => {
   return new Date(date.toDateString()).getTime();
 };
-
 //this one is checked
 export const createTarget = asyncHandler(async (req, res) => {
   let { date, userId, targetHour } = req.body;
-  date = moment(date).startOf('day');
+  date = moment(date).startOf('day').format(); 
   const data = await Study.create({ userId, targetHour, date });
   res.status(201).json(data);
 });
@@ -51,7 +50,8 @@ export const updateTarget = asyncHandler(async (req, res) => {
 
 //this one is checked
 export const updateCompleted = asyncHandler(async (req, res) => {
-  const { userId, completed, date } = req.body;
+  let { userId, completed, date } = req.body; 
+  date = moment(date).format();  
   const data = await Study.findOneAndUpdate(
     {
       userId,
